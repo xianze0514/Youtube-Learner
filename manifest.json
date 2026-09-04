@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "English Listening Typing",
+  "version": "0.7.2",
+  "description": "使用 YouTube 原声和字幕进行逐句听写打字训练。",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://quark.sm.cn/*",
+    "https://dict.youdao.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "开始听写打字训练"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN" data-elt-preview="true">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>听写打字训练预览</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <video
+      muted
+      preload="metadata"
+      poster="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"
+      src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+    ></video>
+    <script>
+      const previewDictionaryEntry = {
+        word: "remarkable",
+        translation: "非凡的；引人注目的",
+        phonetic: "英 [ rɪˈmɑːkəbl ] · 美 [ rɪˈmɑːrkəbl ]",
+        phonetics: [
+          { label: "英", text: "[ rɪˈmɑːkəbl ]", audioUrl: "" },
+          { label: "美", text: "[ rɪˈmɑːrkəbl ]", audioUrl: "" },
+        ],
+        meanings: [
+          { partOfSpeech: "adj.", definition: "非凡的，奇异的；显著的，引人注目的" },
+          { partOfSpeech: "adj.", definition: "值得注意或令人印象深刻的" },
+        ],
+        examples: [
+          { en: "She has made remarkable progress this year.", zh: "她今年取得了显著的进步。" },
+          { en: "The view from the mountain was remarkable.", zh: "山顶的景色令人印象深刻。" },
+        ],
+      };
+      window.chrome ||= {};
+      window.chrome.runtime ||= {};
+      window.chrome.runtime.onMessage ||= { addListener() {} };
+      window.chrome.runtime.sendMessage ||= async (message) => ({
+        entry: { ...previewDictionaryEntry, word: message.word },
+      });
+      document.documentElement.dataset.youtubeSpaceEvents = "0";
+      document.addEventListener("keydown", (event) => {
+        if (event.code !== "Space") return;
+        document.documentElement.dataset.youtubeSpaceEvents = String(
+          Number(document.documentElement.dataset.youtubeSpaceEvents) + 1,
+        );
+        const previewVideo = document.querySelector("video");
+        if (previewVideo.paused) {
+          void previewVideo.play();
+        } else {
+          previewVideo.pause();
+        }
+      });
+    </script>
+    <script src="content.js"></script>
+  </body>
+</html>
