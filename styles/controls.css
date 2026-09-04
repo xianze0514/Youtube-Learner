@@ -1,0 +1,212 @@
+#elt-overlay .elt-controls {
+  min-height: 72px;
+  flex: 0 0 72px;
+  display: grid;
+  grid-template-columns: minmax(260px, auto) minmax(220px, 1fr) minmax(190px, auto);
+  align-items: center;
+  gap: 24px;
+  padding: 12px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: #050505;
+}
+
+#elt-overlay .elt-control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#elt-overlay .elt-control-group-right {
+  justify-content: flex-end;
+}
+
+#elt-overlay .elt-control-button,
+#elt-overlay .elt-button {
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0 13px;
+  color: rgba(255, 255, 255, 0.76);
+  background: rgba(255, 255, 255, 0.07);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 650;
+  transition: background 130ms ease, color 130ms ease, transform 130ms ease;
+}
+
+#elt-overlay .elt-control-button:hover:not(:disabled),
+#elt-overlay .elt-button:hover:not(:disabled) {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.13);
+  transform: translateY(-1px);
+}
+
+#elt-overlay .elt-control-button:disabled,
+#elt-overlay .elt-button:disabled {
+  cursor: default;
+  opacity: 0.28;
+}
+
+#elt-overlay .elt-control-main,
+#elt-overlay .elt-button-primary {
+  border-color: #fff;
+  color: #0a0a0a;
+  background: #fff;
+}
+
+#elt-overlay .elt-control-main:hover:not(:disabled),
+#elt-overlay .elt-button-primary:hover:not(:disabled) {
+  color: #0a0a0a;
+  background: #e5e7eb;
+}
+
+#elt-overlay .elt-timeline {
+  min-width: 0;
+}
+
+#elt-overlay .elt-progress-track {
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+#elt-overlay .elt-progress-bar {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: #8b5cf6;
+  transition: width 80ms linear;
+}
+
+#elt-overlay .elt-timeline-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 7px;
+  color: rgba(255, 255, 255, 0.36);
+  font: 500 9px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+}
+
+#elt-overlay .elt-total-mistakes {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+#elt-overlay .elt-sound-toggle[aria-pressed="true"] {
+  border-color: rgba(167, 139, 250, 0.28);
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.11);
+}
+
+#elt-overlay .elt-sound-toggle[aria-pressed="false"] {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+#elt-overlay .elt-settings-button {
+  border-color: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
+}
+
+#elt-overlay .elt-center-state {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px;
+  background: #08080b;
+  text-align: center;
+}
+
+#elt-overlay .elt-center-state h2 {
+  margin: 18px 0 8px;
+  color: #fff;
+  font-size: 21px;
+}
+
+#elt-overlay .elt-center-state p {
+  max-width: 390px;
+  margin: 0 0 22px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+#elt-overlay .elt-state-mark,
+#elt-overlay .elt-complete-mark {
+  min-width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+#elt-overlay .elt-complete-mark {
+  width: auto;
+  border-color: rgba(52, 211, 153, 0.34);
+  padding: 0 16px;
+  color: #6ee7b7;
+  font-size: 12px;
+}
+
+#elt-overlay .elt-spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid rgba(255, 255, 255, 0.12);
+  border-top-color: #8b5cf6;
+  border-radius: 999px;
+  animation: elt-spin 0.8s linear infinite;
+}
+
+#elt-overlay .elt-hidden {
+  display: none !important;
+}
+
+#elt-overlay .elt-shake {
+  animation: elt-shake 260ms ease-in-out;
+}
+
+#elt-overlay .elt-word-resetting .elt-slot-correct {
+  color: #fb7185;
+}
+
+@keyframes elt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes elt-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes elt-feedback-pop {
+  from {
+    opacity: 0;
+    transform: translateY(2px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

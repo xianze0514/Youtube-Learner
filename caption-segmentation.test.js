@@ -23,7 +23,7 @@ context.window = context;
 
 vm.createContext(context);
 vm.runInContext(
-  fs.readFileSync(path.join(__dirname, "content.js"), "utf8"),
+  fs.readFileSync(path.join(__dirname, "content/captions.js"), "utf8"),
   context,
 );
 

@@ -1,0 +1,249 @@
+#elt-overlay .elt-practice {
+  position: absolute;
+  right: clamp(18px, 4vw, 64px);
+  bottom: clamp(22px, 5vh, 68px);
+  left: clamp(18px, 4vw, 64px);
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  outline: none;
+  pointer-events: none;
+}
+
+#elt-overlay .elt-keyboard-capture {
+  position: fixed !important;
+  top: -100px !important;
+  left: -100px !important;
+  width: 1px !important;
+  height: 1px !important;
+  border: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#elt-overlay .elt-dictation-card {
+  width: min(94%, 980px);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 18px;
+  padding: 16px 20px 14px;
+  background: rgba(8, 8, 12, 0.83);
+  box-shadow: 0 20px 64px rgba(0, 0, 0, 0.46);
+  backdrop-filter: blur(18px);
+  pointer-events: auto;
+}
+
+#elt-overlay .elt-phase-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+#elt-overlay .elt-phase-title {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+#elt-overlay .elt-counter {
+  justify-self: end;
+  color: rgba(255, 255, 255, 0.46);
+  font: 600 10px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+}
+
+#elt-overlay .elt-typing-feedback {
+  min-width: 76px;
+  justify-self: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 9px;
+  font-weight: 720;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#elt-overlay .elt-typing-feedback-correct {
+  border-color: rgba(67, 221, 167, 0.25);
+  color: #86efc7;
+  background: rgba(16, 185, 129, 0.13);
+}
+
+#elt-overlay .elt-typing-feedback-wrong {
+  border-color: rgba(251, 113, 133, 0.28);
+  color: #fda4af;
+  background: rgba(244, 63, 94, 0.13);
+}
+
+#elt-overlay .elt-typing-feedback-pop {
+  animation: elt-feedback-pop 180ms ease-out;
+}
+
+#elt-overlay .elt-phase-detail {
+  margin: 4px 0 12px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+}
+
+#elt-overlay .elt-character-slots {
+  min-height: 56px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 7px 0;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.45);
+  font: 500 clamp(22px, 2.25vw, 37px) / 1.42 ui-monospace, SFMono-Regular,
+    Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.015em;
+  text-align: center;
+}
+
+#elt-overlay .elt-translation {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: 11px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 12px 4px 1px;
+}
+
+#elt-overlay .elt-translation-label {
+  border-radius: 999px;
+  padding: 3px 7px;
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.14);
+  font-size: 9px;
+  font-weight: 760;
+  line-height: 1;
+}
+
+#elt-overlay .elt-translation-text {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 14px;
+  line-height: 1.65;
+  text-align: center;
+}
+
+#elt-overlay .elt-translation-pending .elt-translation-text {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+#elt-overlay .elt-translation-action {
+  border: 0;
+  padding: 3px 0;
+  color: #c4b5fd;
+  background: transparent;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 720;
+}
+
+#elt-overlay .elt-word-slots {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+#elt-overlay .elt-word-lookup {
+  border-radius: 7px;
+  cursor: pointer;
+  outline: none;
+  transition: background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+#elt-overlay .elt-word-lookup:hover,
+#elt-overlay .elt-word-lookup:focus-visible {
+  background: rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+  transform: translateY(-1px);
+}
+
+#elt-overlay .elt-character-slot,
+#elt-overlay .elt-punctuation {
+  min-width: 0.68em;
+  display: inline-block;
+  text-align: center;
+  transition: color 100ms ease, transform 100ms ease;
+}
+
+#elt-overlay .elt-punctuation {
+  min-width: 0.48em;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+#elt-overlay .elt-space-slot {
+  width: clamp(12px, 1.35vw, 22px);
+  height: 0.78em;
+  display: inline-block;
+  margin: 0 2px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 100ms ease;
+}
+
+#elt-overlay .elt-slot-current {
+  color: rgba(255, 255, 255, 0.92);
+  transform: translateY(-1px);
+}
+
+#elt-overlay .elt-space-slot.elt-slot-current {
+  border-bottom-color: rgba(255, 255, 255, 0.84);
+}
+
+#elt-overlay .elt-slot-correct {
+  color: #43dda7;
+}
+
+#elt-overlay .elt-space-slot.elt-slot-correct {
+  border-bottom-color: rgba(67, 221, 167, 0.38);
+}
+
+#elt-overlay .elt-slot-wrong,
+#elt-overlay .elt-space-slot.elt-slot-wrong {
+  color: #fb7185;
+  border-bottom-color: #fb7185;
+}
+
+#elt-overlay .elt-slot-answer {
+  color: #fbbf24;
+}
+
+#elt-overlay .elt-dictation-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 10px;
+}
+
+#elt-overlay .elt-hold-answer {
+  margin-left: auto;
+  border: 0;
+  padding: 3px 0;
+  color: rgba(255, 255, 255, 0.48);
+  background: transparent;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+#elt-overlay .elt-hold-answer:hover:not(:disabled) {
+  color: #fff;
+}
+
+#elt-overlay .elt-hold-answer:disabled {
+  cursor: default;
+  opacity: 0.34;
+}
+
+#elt-overlay .elt-play-error {
+  margin: 8px 0 0;
+  color: #fda4af;
+  font-size: 10px;
+  text-align: center;
+}

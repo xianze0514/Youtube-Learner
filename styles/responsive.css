@@ -1,0 +1,48 @@
+@media (max-width: 980px) {
+  #elt-overlay .elt-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  #elt-overlay .elt-header-center {
+    display: none;
+  }
+
+  #elt-overlay .elt-panel {
+    width: 34%;
+    min-width: 250px;
+  }
+
+  #elt-overlay .elt-controls {
+    grid-template-columns: auto minmax(160px, 1fr) auto;
+    gap: 14px;
+  }
+
+  #elt-overlay .elt-control-button {
+    padding: 0 10px;
+  }
+
+  #elt-overlay #elt-shortcut-hint {
+    display: none;
+  }
+}
+
+@media (max-height: 620px) {
+  #elt-overlay .elt-practice {
+    bottom: 16px;
+  }
+
+  #elt-overlay .elt-dictation-card {
+    padding: 10px 16px;
+  }
+
+  #elt-overlay .elt-phase-detail,
+  #elt-overlay .elt-dictation-meta {
+    margin-top: 3px;
+    margin-bottom: 5px;
+  }
+
+  #elt-overlay .elt-character-slots {
+    min-height: 40px;
+    font-size: clamp(18px, 2vw, 29px);
+  }
+}

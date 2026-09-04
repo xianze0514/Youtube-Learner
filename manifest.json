@@ -11,7 +11,8 @@
     "https://api.deepseek.com/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background/main.js",
+    "type": "module"
   },
   "action": {
     "default_title": "开始听写打字训练"
@@ -23,8 +24,22 @@
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],
-      "js": ["content.js"],
-      "css": ["styles.css"],
+      "js": [
+        "content/captions.js",
+        "content/transcript.js",
+        "content/template.js",
+        "content/dictionary.js",
+        "content/renderer.js",
+        "content/audio.js",
+        "content/main.js"
+      ],
+      "css": [
+        "styles/base.css",
+        "styles/practice.css",
+        "styles/dictionary.css",
+        "styles/controls.css",
+        "styles/responsive.css"
+      ],
       "run_at": "document_idle"
     }
   ]

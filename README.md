@@ -104,9 +104,9 @@ python3 -m http.server 4173
 | 文件 | 说明 |
 | --- | --- |
 | `manifest.json` | Chrome 扩展清单、权限和入口配置 |
-| `background.js` | 工具栏入口、字幕获取、翻译、查词和设置存储 |
-| `content.js` | 训练状态、字幕处理、键盘交互和页面渲染 |
-| `styles.css` | YouTube 训练界面样式 |
+| `background/` | Service worker：消息入口、设置、翻译、查词和 YouTube 页面通信 |
+| `content/` | 内容脚本：训练控制、字幕处理与获取、渲染、词典和界面模板 |
+| `styles/` | 按基础布局、练习区、词典、控制区和响应式规则拆分的界面样式 |
 | `options.html` / `options.js` / `options.css` | 扩展设置页 |
 | `preview.html` | 无需安装扩展的本地界面预览 |
 | `caption-segmentation.test.js` | 字幕去重、拆分与合并的回归测试 |
