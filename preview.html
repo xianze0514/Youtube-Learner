@@ -34,9 +34,36 @@
       window.chrome ||= {};
       window.chrome.runtime ||= {};
       window.chrome.runtime.onMessage ||= { addListener() {} };
-      window.chrome.runtime.sendMessage ||= async (message) => ({
-        entry: { ...previewDictionaryEntry, word: message.word },
-      });
+      const previewTranslations = {
+        0: "每天迈出一小步，就会带来显著的进步。",
+        1: "仔细听，然后输入你听到的句子。",
+        2: "练习会让陌生的声音逐渐变得自然。",
+        3: "每正确输入一个单词，信心都会随之增长。",
+      };
+      window.chrome.runtime.sendMessage ||= async (message) => {
+        if (message.type === "ELT_GET_SETTINGS") {
+          return {
+            settings: {
+              translationEnabled: true,
+              completionMode: "manual",
+              apiKeyConfigured: true,
+              model: "deepseek-v4-flash",
+            },
+          };
+        }
+        if (message.type === "ELT_TRANSLATE_SEGMENTS") {
+          return {
+            translations: message.segments.map((segment) => ({
+              id: segment.id,
+              translatedText: previewTranslations[segment.id],
+            })),
+          };
+        }
+        if (message.type === "ELT_OPEN_SETTINGS") return { ok: true };
+        return {
+          entry: { ...previewDictionaryEntry, word: message.word },
+        };
+      };
       document.documentElement.dataset.youtubeSpaceEvents = "0";
       document.addEventListener("keydown", (event) => {
         if (event.code !== "Space") return;

@@ -27,10 +27,22 @@ vm.runInContext(
   context,
 );
 
-const { joinCaptionText, mergeCuesIntoSentences } = context.__ELT_TEST_API__;
+const {
+  joinCaptionText,
+  mergeCuesIntoSentences,
+  splitSegmentsForPractice,
+} = context.__ELT_TEST_API__;
 const cue = (text, startMs, endMs) => ({ text, startMs, endMs });
 const texts = (cues) =>
   Array.from(mergeCuesIntoSentences(cues), (item) => item.text);
+const practiceSegments = (text, startMs = 0, endMs = 15000) =>
+  Array.from(
+    splitSegmentsForPractice([
+      { id: 0, text, startMs, endMs, hasEstimatedStart: false },
+    ]),
+  );
+const wordCount = (text) =>
+  Array.from(text.matchAll(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu)).length;
 
 assert.equal(
   joinCaptionText("I think this is", "this is a much better way."),
@@ -99,6 +111,62 @@ assert.deepEqual(
   ]),
   ["This line is repeated."],
   "overlapping duplicate subtitle events should only appear once",
+);
+
+const screenshotSentence =
+  "By locking in on you for the next 600 seconds, I'm very confident that you're going to walk away with what I think is the single best hack for longevity, purpose and living the type of lives that we want to live.";
+const screenshotChunks = practiceSegments(screenshotSentence, 0, 17000);
+assert.ok(
+  screenshotChunks.length >= 3,
+  "a long beginner exercise should become several manageable chunks",
+);
+assert.deepEqual(
+  screenshotChunks.map((segment) => segment.text),
+  [
+    "By locking in on you for the next 600 seconds,",
+    "I'm very confident that you're going to walk away",
+    "with what I think is the single best hack for longevity,",
+    "purpose and living the type of lives that we want to live.",
+  ],
+  "the reported TED sentence should split at natural phrase and punctuation boundaries",
+);
+assert.ok(
+  screenshotChunks.every((segment) => wordCount(segment.text) <= 14),
+  "practice chunks should stay within the beginner word limit",
+);
+assert.equal(
+  screenshotChunks.map((segment) => segment.text).join(" "),
+  screenshotSentence,
+  "practice splitting must preserve every word and punctuation mark",
+);
+assert.equal(screenshotChunks[0].startMs, 0);
+assert.equal(screenshotChunks.at(-1).endMs, 17000);
+for (let index = 1; index < screenshotChunks.length; index += 1) {
+  assert.equal(
+    screenshotChunks[index - 1].endMs,
+    screenshotChunks[index].startMs,
+    "estimated practice timings should remain continuous",
+  );
+  assert.equal(screenshotChunks[index].hasEstimatedStart, true);
+}
+
+const commaSentence =
+  "I want you to spend the next 10 minutes being absurdly self-indulgent, which is advice I would almost never otherwise give people.";
+assert.deepEqual(
+  practiceSegments(commaSentence, 0, 10000).map((segment) => segment.text),
+  [
+    "I want you to spend the next 10 minutes being absurdly self-indulgent,",
+    "which is advice I would almost never otherwise give people.",
+  ],
+  "a natural comma and clause boundary should be preferred over a period-only split",
+);
+
+assert.deepEqual(
+  practiceSegments("Practice makes unfamiliar sounds feel natural.", 0, 4200).map(
+    (segment) => segment.text,
+  ),
+  ["Practice makes unfamiliar sounds feel natural."],
+  "a short exercise should remain unchanged",
 );
 
 console.log("caption segmentation tests: passed");

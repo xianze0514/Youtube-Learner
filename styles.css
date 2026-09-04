@@ -257,6 +257,18 @@
   line-height: 1.58;
 }
 
+#elt-overlay .elt-subtitle-translation {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+#elt-overlay .elt-subtitle-current .elt-subtitle-translation {
+  color: rgba(0, 0, 0, 0.62);
+}
+
 #elt-overlay .elt-subtitle-masked {
   color: rgba(255, 255, 255, 0.28);
   font-size: 11px;
@@ -382,6 +394,47 @@
     Menlo, Monaco, Consolas, monospace;
   letter-spacing: 0.015em;
   text-align: center;
+}
+
+#elt-overlay .elt-translation {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: 11px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 12px 4px 1px;
+}
+
+#elt-overlay .elt-translation-label {
+  border-radius: 999px;
+  padding: 3px 7px;
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.14);
+  font-size: 9px;
+  font-weight: 760;
+  line-height: 1;
+}
+
+#elt-overlay .elt-translation-text {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 14px;
+  line-height: 1.65;
+  text-align: center;
+}
+
+#elt-overlay .elt-translation-pending .elt-translation-text {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+#elt-overlay .elt-translation-action {
+  border: 0;
+  padding: 3px 0;
+  color: #c4b5fd;
+  background: transparent;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 720;
 }
 
 #elt-overlay .elt-word-slots {
@@ -937,6 +990,11 @@
 
 #elt-overlay .elt-sound-toggle[aria-pressed="false"] {
   color: rgba(255, 255, 255, 0.38);
+}
+
+#elt-overlay .elt-settings-button {
+  border-color: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
 }
 
 #elt-overlay .elt-center-state {

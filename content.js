@@ -14,7 +14,15 @@
   const HARD_SENTENCE_GAP_MS = 1500;
   const MAX_SENTENCE_DURATION_MS = 24000;
   const MAX_SENTENCE_CHARACTERS = 280;
+  const PRACTICE_TARGET_WORDS = 11;
+  const PRACTICE_MAX_WORDS = 14;
+  const PRACTICE_MIN_WORDS = 5;
+  const PRACTICE_MAX_CHARACTERS = 96;
+  const PRACTICE_MAX_DURATION_MS = 8500;
   const PLAYBACK_RATES = [0.75, 1, 1.25, 1.5];
+  const TRANSLATION_PRELOAD_SIZE = 10;
+  const TRANSLATION_TRIGGER_THRESHOLD = 5;
+  const TYPING_SOUND_MASTER_GAIN = 2.4;
   const dictionaryCache = new Map();
 
   const state = {
@@ -34,6 +42,7 @@
     showAnswer: false,
     panelWidth: 28,
     trackLabel: "",
+    videoId: "",
     error: "",
     animationFrame: 0,
     timer: 0,
@@ -41,6 +50,7 @@
     typingFeedbackTimer: 0,
     soundEnabled: true,
     typingAudioContext: null,
+    typingAudioMasterGain: null,
     dictionaryHoverTimer: 0,
     dictionaryCloseTimer: 0,
     dictionaryRequestId: 0,
@@ -49,6 +59,16 @@
     dictionaryLoading: false,
     dictionaryError: "",
     dictionaryAudio: null,
+    settings: {
+      translationEnabled: true,
+      completionMode: "manual",
+      apiKeyConfigured: false,
+      model: "deepseek-v4-flash",
+    },
+    translations: new Map(),
+    translationLoadingIds: new Set(),
+    translationErrors: new Map(),
+    translationGeneration: 0,
     runId: 0,
     originalOverflow: "",
     elements: {},
@@ -56,6 +76,10 @@
 
   if (typeof chrome !== "undefined" && chrome.runtime?.onMessage) {
     chrome.runtime.onMessage.addListener((message) => {
+      if (message?.type === "ELT_SETTINGS_UPDATED") {
+        applyPublicSettings(message.settings);
+        return;
+      }
       if (message?.type !== "ELT_TOGGLE_TRAINER") return;
 
       if (state.overlay) {
@@ -83,7 +107,9 @@
 
     try {
       setLoadingMessage("正在读取 YouTube 字幕……");
+      const settingsPromise = loadPublicSettings();
       const { segments, trackLabel } = await loadSubtitleSegments(playerData);
+      await settingsPromise;
 
       if (!state.overlay) return;
       if (segments.length === 0) {
@@ -92,9 +118,15 @@
 
       state.segments = segments;
       state.trackLabel = trackLabel;
+      state.videoId = playerData?.videoId || getVideoId() || "unknown";
+      state.translations = new Map();
+      state.translationLoadingIds = new Set();
+      state.translationErrors = new Map();
+      state.translationGeneration += 1;
       state.index = findStartingIndex(segments, video.currentTime * 1000);
       state.phase = "listening";
       render();
+      void prefetchTranslations(state.index);
       await playSegment(state.index, "listening", true);
     } catch (error) {
       console.error("[English Listening Typing] 字幕加载失败：", error);
@@ -165,6 +197,7 @@
                 </div>
                 <p id="elt-phase-detail" class="elt-phase-detail"></p>
                 <div id="elt-character-slots" class="elt-character-slots" aria-label="听写输入区域"></div>
+                <div id="elt-translation" class="elt-translation elt-hidden" aria-live="polite"></div>
                 <p id="elt-play-error" class="elt-play-error"></p>
                 <div class="elt-dictation-meta">
                   <span id="elt-character-count"></span>
@@ -206,6 +239,7 @@
             </div>
           </div>
           <div class="elt-control-group elt-control-group-right">
+            <button id="elt-settings" class="elt-control-button elt-settings-button" type="button" title="训练设置" aria-label="打开训练设置">设置</button>
             <button id="elt-sound" class="elt-control-button elt-sound-toggle" type="button" aria-pressed="true">音效 开</button>
             <button id="elt-speed" class="elt-control-button" type="button">1×</button>
             <span id="elt-total-mistakes" class="elt-total-mistakes">错误 0</span>
@@ -238,6 +272,7 @@
       progressBar: overlay.querySelector("#elt-progress-bar"),
       playError: overlay.querySelector("#elt-play-error"),
       characterSlots: overlay.querySelector("#elt-character-slots"),
+      translation: overlay.querySelector("#elt-translation"),
       characterCount: overlay.querySelector("#elt-character-count"),
       mistakeCount: overlay.querySelector("#elt-mistake-count"),
       previous: overlay.querySelector("#elt-previous"),
@@ -246,6 +281,7 @@
       skip: overlay.querySelector("#elt-skip"),
       speed: overlay.querySelector("#elt-speed"),
       sound: overlay.querySelector("#elt-sound"),
+      settings: overlay.querySelector("#elt-settings"),
       totalMistakes: overlay.querySelector("#elt-total-mistakes"),
       segmentTime: overlay.querySelector("#elt-segment-time"),
       panel: overlay.querySelector("#elt-panel"),
@@ -266,6 +302,7 @@
     state.elements.skip.addEventListener("click", skipSentence);
     state.elements.speed.addEventListener("click", cyclePlaybackRate);
     state.elements.sound.addEventListener("click", toggleTypingSound);
+    state.elements.settings.addEventListener("click", openSettings);
     state.elements.showAnswer.addEventListener("click", toggleAnswer);
     state.elements.divider.addEventListener("pointerdown", startPanelResize);
     state.elements.dictionary.addEventListener("pointerenter", cancelDictionaryClose);
@@ -282,6 +319,131 @@
       document.title.replace(/\s*-\s*YouTube\s*$/, "").trim() ||
       "听写打字训练"
     );
+  }
+
+  async function loadPublicSettings() {
+    try {
+      const response = await chrome.runtime.sendMessage({
+        type: "ELT_GET_SETTINGS",
+      });
+      if (response?.settings) applyPublicSettings(response.settings);
+    } catch (error) {
+      console.warn("[English Listening Typing] 设置读取失败，使用默认值：", error);
+    }
+  }
+
+  function applyPublicSettings(settings) {
+    if (!settings || typeof settings !== "object") return;
+    state.settings = {
+      translationEnabled: settings.translationEnabled !== false,
+      completionMode: settings.completionMode === "auto" ? "auto" : "manual",
+      apiKeyConfigured: Boolean(settings.apiKeyConfigured),
+      model: settings.model || "deepseek-v4-flash",
+    };
+
+    if (state.settings.translationEnabled && state.settings.apiKeyConfigured) {
+      void prefetchTranslations(state.index);
+    }
+    if (
+      state.overlay &&
+      !["loading", "error"].includes(state.phase)
+    ) {
+      render();
+    }
+  }
+
+  function openSettings(event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+    void chrome.runtime.sendMessage({ type: "ELT_OPEN_SETTINGS" }).catch((error) => {
+      state.error = `设置页打开失败：${error instanceof Error ? error.message : String(error)}`;
+      render();
+    });
+  }
+
+  async function prefetchTranslations(startIndex) {
+    if (
+      !state.overlay ||
+      !state.settings.translationEnabled ||
+      !state.settings.apiKeyConfigured ||
+      state.segments.length === 0 ||
+      state.translationLoadingIds.size > 0
+    ) {
+      return;
+    }
+
+    let translatedAhead = 0;
+    while (
+      startIndex + translatedAhead < state.segments.length &&
+      state.translations.has(
+        String(state.segments[startIndex + translatedAhead].id),
+      )
+    ) {
+      translatedAhead += 1;
+    }
+    if (translatedAhead >= TRANSLATION_TRIGGER_THRESHOLD) return;
+
+    const firstMissingIndex = startIndex + translatedAhead;
+    const batch = state.segments
+      .slice(firstMissingIndex, firstMissingIndex + TRANSLATION_PRELOAD_SIZE)
+      .filter(
+        (segment) =>
+          !state.translations.has(String(segment.id)) &&
+          !state.translationLoadingIds.has(String(segment.id)),
+      );
+    if (batch.length === 0) return;
+
+    const generation = state.translationGeneration;
+    batch.forEach((segment) => {
+      const id = String(segment.id);
+      state.translationLoadingIds.add(id);
+      state.translationErrors.delete(id);
+    });
+    renderCurrentTranslation();
+
+    try {
+      const response = await chrome.runtime.sendMessage({
+        type: "ELT_TRANSLATE_SEGMENTS",
+        videoId: state.videoId,
+        segments: batch.map((segment) => ({
+          id: segment.id,
+          text: segment.text,
+        })),
+      });
+      if (generation !== state.translationGeneration || !state.overlay) return;
+      if (response?.apiKeyRequired) {
+        state.settings.apiKeyConfigured = false;
+        return;
+      }
+      if (response?.error) throw new Error(response.error);
+
+      const returnedIds = new Set();
+      for (const translation of response?.translations || []) {
+        const id = String(translation?.id);
+        const translatedText = String(translation?.translatedText || "").trim();
+        if (!translatedText) continue;
+        returnedIds.add(id);
+        state.translations.set(id, translatedText);
+      }
+      batch.forEach((segment) => {
+        const id = String(segment.id);
+        if (!returnedIds.has(id) && !state.translations.has(id)) {
+          state.translationErrors.set(id, "DeepSeek 未返回这一句的翻译");
+        }
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      batch.forEach((segment) => {
+        state.translationErrors.set(String(segment.id), message);
+      });
+    } finally {
+      if (generation === state.translationGeneration) {
+        batch.forEach((segment) =>
+          state.translationLoadingIds.delete(String(segment.id)),
+        );
+        if (state.overlay) render();
+      }
+    }
   }
 
   function focusKeyboardCapture() {
@@ -333,6 +495,7 @@
     if (state.typingAudioContext) {
       void state.typingAudioContext.close().catch(() => {});
       state.typingAudioContext = null;
+      state.typingAudioMasterGain = null;
     }
     closeDictionaryImmediately();
     window.removeEventListener("keydown", handleOverlayShortcut, true);
@@ -347,6 +510,10 @@
     state.originalVideo = null;
     state.segments = [];
     state.completedIndices = new Set();
+    state.translations = new Map();
+    state.translationLoadingIds = new Set();
+    state.translationErrors = new Map();
+    state.translationGeneration += 1;
     state.elements = {};
     state.runId += 1;
   }
@@ -420,7 +587,9 @@
       result = { cues, track: preferredTrack, clientName: "WEB" };
     }
 
-    const segments = mergeCuesIntoSentences(result.cues);
+    const segments = splitSegmentsForPractice(
+      mergeCuesIntoSentences(result.cues),
+    );
     let timingCues = result.cues;
     let timingSource = hasWordTiming(timingCues) ? result.track : null;
 
@@ -1143,6 +1312,198 @@
       .map((segment, index) => ({ ...segment, id: index }));
   }
 
+  function splitSegmentsForPractice(segments) {
+    return segments
+      .flatMap(splitSegmentForPractice)
+      .filter((segment) => segment.text?.trim())
+      .map((segment, index) => ({ ...segment, id: index }));
+  }
+
+  function splitSegmentForPractice(segment) {
+    const text = String(segment?.text || "").trim();
+    const words = getWordsWithOffsets(text);
+    const duration = Math.max(1, segment.endMs - segment.startMs);
+    const shouldSplit =
+      words.length > PRACTICE_MAX_WORDS ||
+      text.length > PRACTICE_MAX_CHARACTERS ||
+      duration > PRACTICE_MAX_DURATION_MS;
+    if (!shouldSplit || words.length < PRACTICE_MIN_WORDS * 2) {
+      return [{ ...segment, text }];
+    }
+
+    const desiredChunkCount = Math.max(
+      2,
+      Math.ceil(words.length / PRACTICE_TARGET_WORDS),
+      Math.ceil(text.length / PRACTICE_MAX_CHARACTERS),
+      Math.ceil(duration / PRACTICE_MAX_DURATION_MS),
+    );
+    const targetWords = Math.max(
+      PRACTICE_MIN_WORDS,
+      Math.ceil(words.length / desiredChunkCount),
+    );
+    const breakWordIndices = findPracticeBreaks(text, words, targetWords);
+    if (breakWordIndices.length <= 1) return [{ ...segment, text }];
+
+    let startWordIndex = 0;
+    return breakWordIndices.map((endWordIndex, chunkIndex) => {
+      const startCharacter =
+        startWordIndex === 0 ? 0 : words[startWordIndex].start;
+      const endCharacter =
+        endWordIndex >= words.length ? text.length : words[endWordIndex].start;
+      const chunkText = text.slice(startCharacter, endCharacter).trim();
+      const startRatio = startWordIndex / words.length;
+      const endRatio = endWordIndex / words.length;
+      const chunk = {
+        ...segment,
+        text: chunkText,
+        startMs: segment.startMs + duration * startRatio,
+        endMs: segment.startMs + duration * endRatio,
+        hasEstimatedStart:
+          chunkIndex > 0 || Boolean(segment.hasEstimatedStart),
+      };
+      startWordIndex = endWordIndex;
+      return chunk;
+    });
+  }
+
+  function findPracticeBreaks(text, words, targetWords) {
+    const wordCount = words.length;
+    const costs = new Float64Array(wordCount + 1);
+    const previous = new Int16Array(wordCount + 1);
+    costs.fill(Number.POSITIVE_INFINITY);
+    previous.fill(-1);
+    costs[0] = 0;
+
+    for (let start = 0; start < wordCount; start += 1) {
+      if (!Number.isFinite(costs[start])) continue;
+      const remainingAtStart = wordCount - start;
+      const minimumEnd = Math.min(
+        wordCount,
+        start + (remainingAtStart <= PRACTICE_MAX_WORDS ? 1 : PRACTICE_MIN_WORDS),
+      );
+      const maximumEnd = Math.min(wordCount, start + PRACTICE_MAX_WORDS);
+
+      for (let end = minimumEnd; end <= maximumEnd; end += 1) {
+        const remaining = wordCount - end;
+        if (remaining > 0 && remaining < PRACTICE_MIN_WORDS) continue;
+
+        const chunkWords = end - start;
+        // 每多切一段都付出固定成本，避免为了追求平均字数而拆散完整短语。
+        let cost = costs[start] + 50 + (chunkWords - targetWords) ** 2 * 2;
+        if (chunkWords < PRACTICE_MIN_WORDS) cost += 80;
+        if (end < wordCount) {
+          cost += getPracticeBoundaryCost(text, words, end);
+        }
+
+        if (cost < costs[end]) {
+          costs[end] = cost;
+          previous[end] = start;
+        }
+      }
+    }
+
+    if (previous[wordCount] < 0) return [wordCount];
+    const breaks = [];
+    let cursor = wordCount;
+    while (cursor > 0) {
+      breaks.push(cursor);
+      cursor = previous[cursor];
+      if (cursor < 0) return [wordCount];
+    }
+    return breaks.reverse();
+  }
+
+  function getPracticeBoundaryCost(text, words, endWordIndex) {
+    const previousWord = words[endWordIndex - 1];
+    const nextWord = words[endWordIndex];
+    const between = text.slice(previousWord.end, nextWord.start);
+    const previousNormalized = previousWord.normalized;
+    const nextNormalized = nextWord.normalized;
+    let cost = 0;
+
+    if (/[.!?]["'’”)]?\s*$/u.test(between)) {
+      cost -= 100;
+    } else if (/[;:]["'’”)]?\s*$/u.test(between)) {
+      cost -= 72;
+    } else if (/[,]["'’”)]?\s*$/u.test(between)) {
+      cost -= 58;
+    } else if (/[–—]\s*$/u.test(between)) {
+      cost -= 50;
+    }
+
+    if (
+      new Set([
+        "and",
+        "but",
+        "or",
+        "so",
+        "yet",
+        "because",
+        "although",
+        "though",
+        "if",
+        "when",
+        "while",
+        "which",
+        "who",
+        "whose",
+        "where",
+        "what",
+        "how",
+      ]).has(nextNormalized)
+    ) {
+      cost -= 22;
+    }
+
+    if (
+      new Set([
+        "a",
+        "an",
+        "the",
+        "to",
+        "of",
+        "for",
+        "with",
+        "from",
+        "into",
+        "onto",
+        "at",
+        "by",
+        "about",
+        "as",
+        "than",
+        "and",
+        "or",
+        "but",
+        "is",
+        "are",
+        "was",
+        "were",
+        "be",
+        "been",
+        "being",
+        "have",
+        "has",
+        "had",
+        "do",
+        "does",
+        "did",
+        "will",
+        "would",
+        "can",
+        "could",
+        "should",
+        "may",
+        "might",
+        "must",
+      ]).has(previousNormalized)
+    ) {
+      cost += 68;
+    }
+
+    return cost;
+  }
+
   function hasTerminalSentencePunctuation(text) {
     return /[.!?]["'’”)]?$/.test(String(text || "").trim());
   }
@@ -1508,6 +1869,7 @@
     video.pause();
     video.currentTime = getSegmentPlaybackStartMs(segment) / 1000;
     render();
+    void prefetchTranslations(index);
 
     try {
       await video.play();
@@ -1546,8 +1908,22 @@
         return;
       }
 
+      if (phase === "reviewingPlayback") {
+        state.phase = "reviewing";
+        render();
+        focusKeyboardCapture();
+        return;
+      }
+
       state.completedIndices.add(index);
       state.completed = state.completedIndices.size;
+      if (state.settings.completionMode === "manual") {
+        state.phase = "reviewing";
+        render();
+        focusKeyboardCapture();
+        return;
+      }
+
       const nextIndex = index + 1;
       if (nextIndex >= state.segments.length) {
         state.phase = "complete";
@@ -1661,6 +2037,8 @@
     renderTypingState();
 
     if (sentenceComplete) {
+      state.completedIndices.add(state.index);
+      state.completed = state.completedIndices.size;
       state.phase = "replaying";
       render();
       state.timer = window.setTimeout(() => {
@@ -1689,7 +2067,14 @@
   }
 
   function replaySentence() {
-    void playSegment(state.index, "listening", false);
+    const isReviewing =
+      state.completedIndices.has(state.index) &&
+      ["replaying", "reviewing", "reviewingPlayback"].includes(state.phase);
+    void playSegment(
+      state.index,
+      isReviewing ? "reviewingPlayback" : "listening",
+      false,
+    );
   }
 
   function skipSentence() {
@@ -1765,6 +2150,16 @@
       return;
     }
 
+    if (
+      state.phase === "reviewing" &&
+      (event.key === "Enter" || event.key === "ArrowRight")
+    ) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      skipSentence();
+      return;
+    }
+
     if (state.phase === "typing") {
       event.stopImmediatePropagation();
 
@@ -1802,6 +2197,10 @@
     if (event.code === "Space" && state.video) {
       event.preventDefault();
       event.stopImmediatePropagation();
+      if (state.phase === "reviewing") {
+        replaySentence();
+        return;
+      }
       if (state.video.paused) {
         void state.video.play().catch(() => {
           state.error = "浏览器阻止了自动播放，请点击“重播本句”。";
@@ -1851,9 +2250,13 @@
     if (!state.overlay) return;
 
     const isComplete = state.phase === "complete";
-    const isPractice = ["listening", "typing", "replaying"].includes(
-      state.phase,
-    );
+    const isPractice = [
+      "listening",
+      "typing",
+      "replaying",
+      "reviewing",
+      "reviewingPlayback",
+    ].includes(state.phase);
 
     state.elements.loading.classList.add("elt-hidden");
     state.elements.error.classList.add("elt-hidden");
@@ -1878,7 +2281,14 @@
     const phaseContent = {
       listening: ["先听一遍", "专心听原声，句末会自动暂停"],
       typing: ["输入你听到的完整句子", "大小写不敏感，标点会自动跳过"],
-      replaying: ["输入正确，正在复播", "结束后自动进入下一句"],
+      replaying: [
+        "整句正确，正在复播",
+        state.settings.completionMode === "auto"
+          ? "复播结束后自动进入下一句"
+          : "复播结束后会停留，可继续跟读",
+      ],
+      reviewing: ["本句已完成", "可反复重播跟读，按 Enter 进入下一句"],
+      reviewingPlayback: ["正在重播本句", "可继续跟读，播放结束后仍停留本句"],
     }[state.phase];
 
     state.elements.phaseTitle.textContent = phaseContent[0];
@@ -1887,9 +2297,14 @@
     state.elements.previous.disabled = state.index === 0;
     state.elements.replay.textContent =
       state.phase === "listening" ? "重新播放" : "重播本句";
+    state.elements.skip.textContent =
+      state.phase === "reviewing" && state.index >= state.segments.length - 1
+        ? "完成训练"
+        : "下一句";
     state.elements.playError.textContent = state.error;
 
     renderTypingState();
+    renderCurrentTranslation();
     renderSubtitleList();
     updatePlaybackProgress();
   }
@@ -1907,6 +2322,76 @@
       : "Tab 查看答案并查词";
     state.elements.showAnswer.disabled = state.phase !== "typing";
     renderCharacterSlots(model);
+  }
+
+  function renderCurrentTranslation() {
+    const container = state.elements.translation;
+    const segment = state.segments[state.index];
+    if (!container || !segment) return;
+
+    const isSolved = state.completedIndices.has(state.index);
+    if (!isSolved || !state.settings.translationEnabled) {
+      container.classList.add("elt-hidden");
+      container.replaceChildren();
+      return;
+    }
+
+    container.classList.remove("elt-hidden");
+    container.classList.remove("elt-translation-pending");
+    container.replaceChildren();
+
+    const label = document.createElement("span");
+    label.className = "elt-translation-label";
+    label.textContent = "中文";
+    const body = document.createElement("span");
+    body.className = "elt-translation-text";
+    const id = String(segment.id);
+    const translatedText = state.translations.get(id);
+
+    if (translatedText) {
+      body.textContent = translatedText;
+      container.append(label, body);
+      return;
+    }
+
+    if (!state.settings.apiKeyConfigured) {
+      body.textContent = "配置 DeepSeek API Key 后显示翻译";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "elt-translation-action";
+      button.textContent = "去设置";
+      button.addEventListener("click", openSettings);
+      container.append(label, body, button);
+      return;
+    }
+
+    if (state.translationLoadingIds.has(id)) {
+      container.classList.add("elt-translation-pending");
+      body.textContent = `正在使用 ${state.settings.model} 翻译…`;
+      container.append(label, body);
+      return;
+    }
+
+    const error = state.translationErrors.get(id);
+    if (error) {
+      body.textContent = error;
+      const retry = document.createElement("button");
+      retry.type = "button";
+      retry.className = "elt-translation-action";
+      retry.textContent = "重试";
+      retry.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        state.translationErrors.delete(id);
+        void prefetchTranslations(state.index);
+      });
+      container.append(label, body, retry);
+      return;
+    }
+
+    body.textContent = "正在准备翻译…";
+    container.append(label, body);
+    void prefetchTranslations(state.index);
   }
 
   function showTypingFeedback(type, message, durationMs) {
@@ -1938,6 +2423,9 @@
 
     if (!state.typingAudioContext) {
       state.typingAudioContext = new AudioContextClass();
+      state.typingAudioMasterGain = state.typingAudioContext.createGain();
+      state.typingAudioMasterGain.gain.value = TYPING_SOUND_MASTER_GAIN;
+      state.typingAudioMasterGain.connect(state.typingAudioContext.destination);
     }
     const context = state.typingAudioContext;
     if (context.state === "suspended") {
@@ -1984,7 +2472,10 @@
     gain.gain.setValueAtTime(volume, startTime);
     gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
     source.buffer = buffer;
-    source.connect(filter).connect(gain).connect(context.destination);
+    source
+      .connect(filter)
+      .connect(gain)
+      .connect(state.typingAudioMasterGain || context.destination);
     source.start(startTime);
     source.stop(startTime + duration);
   }
@@ -2010,7 +2501,9 @@
     }
     gain.gain.setValueAtTime(volume, startTime);
     gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-    oscillator.connect(gain).connect(context.destination);
+    oscillator
+      .connect(gain)
+      .connect(state.typingAudioMasterGain || context.destination);
     oscillator.start(startTime);
     oscillator.stop(startTime + duration);
   }
@@ -2430,6 +2923,13 @@
           : "完成前隐藏";
 
       row.append(rowHeader, text);
+      const translatedText = state.translations.get(String(segment.id));
+      if (isCompleted && state.settings.translationEnabled && translatedText) {
+        const translation = document.createElement("span");
+        translation.className = "elt-subtitle-translation";
+        translation.textContent = translatedText;
+        row.append(translation);
+      }
       row.addEventListener("click", () => {
         void playSegment(index, "listening", true);
       });
@@ -2498,6 +2998,16 @@
     state.index = 0;
     state.phase = "typing";
     state.completedIndices = new Set();
+    state.settings = {
+      translationEnabled: true,
+      completionMode: "manual",
+      apiKeyConfigured: true,
+      model: "deepseek-v4-flash",
+    };
+    state.videoId = "preview";
+    state.translations = new Map();
+    state.translationGeneration += 1;
+    void prefetchTranslations(0);
     render();
     focusKeyboardCapture();
   }
@@ -2506,6 +3016,7 @@
     globalThis.__ELT_TEST_API__ = {
       joinCaptionText,
       mergeCuesIntoSentences,
+      splitSegmentsForPractice,
       segmentTextIntoSentences,
     };
   }

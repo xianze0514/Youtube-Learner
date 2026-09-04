@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>English Listening Typing 设置</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="settings-shell">
+      <header>
+        <span class="eyebrow">ENGLISH LISTENING TYPING</span>
+        <h1>训练设置</h1>
+        <p>设置会保存在当前设备，并自动应用到已经打开的训练页面。</p>
+      </header>
+
+      <form id="settings-form">
+        <section class="settings-card">
+          <div class="section-heading">
+            <div>
+              <h2>中文翻译</h2>
+              <p>答对后在英文下方显示自然的简体中文翻译。</p>
+            </div>
+            <label class="switch">
+              <input id="translation-enabled" type="checkbox" checked />
+              <span aria-hidden="true"></span>
+              <em>启用</em>
+            </label>
+          </div>
+
+          <label class="field-label" for="deepseek-api-key">DeepSeek API Key</label>
+          <div class="secret-row">
+            <input
+              id="deepseek-api-key"
+              type="password"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="sk-..."
+            />
+            <button id="toggle-key" class="secondary-button" type="button">显示</button>
+          </div>
+          <div class="field-meta">
+            <span>模型固定使用 <strong>deepseek-v4-flash</strong></span>
+            <button id="test-key" class="text-button" type="button">测试连接</button>
+          </div>
+          <p class="privacy-note">
+            为方便使用，密钥会保存在本机的 Chrome 扩展存储中，不会同步到其他设备，也不会传给 YouTube 页面。
+          </p>
+        </section>
+
+        <section class="settings-card">
+          <div class="section-heading compact">
+            <div>
+              <h2>答对后的行为</h2>
+              <p>答对后始终先自动复播一次。</p>
+            </div>
+          </div>
+
+          <div class="choice-list">
+            <label class="choice">
+              <input type="radio" name="completion-mode" value="manual" checked />
+              <span>
+                <strong>停留当前句</strong>
+                <small>复播结束后暂停，可不限次数重播，再手动进入下一句。</small>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="completion-mode" value="auto" />
+              <span>
+                <strong>自动进入下一句</strong>
+                <small>复播结束后自动继续，保持原来的连续训练节奏。</small>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <div class="action-row">
+          <p id="status" role="status" aria-live="polite"></p>
+          <button id="save" class="primary-button" type="submit">保存设置</button>
+        </div>
+      </form>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>
