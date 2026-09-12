@@ -51,6 +51,7 @@
 
     if (!isPractice) return;
     review.prefetchAnalysis();
+    review.prefetchLinking();
 
     const phaseContent = {
       listening: ["先听一遍", "专心听原声，句末会自动暂停"],
@@ -98,13 +99,14 @@
     state.elements.showAnswer.disabled = state.phase !== "typing";
     const isSolved = state.completedIndices.has(state.index);
     state.elements.shortcutHint.textContent = isSolved
-      ? "悬停查词 · Ctrl J 重播 · Enter 下一句"
+      ? "下方弧线提示常见连读 · 悬停查词 · Ctrl J 重播 · Enter 下一句"
       : "直接打字 · Ctrl J 重播 · Esc 退出";
     state.elements.practice.classList.toggle("elt-is-review", isSolved);
     state.elements.characterSlots.classList.toggle("elt-review-sentence", isSolved);
     if (isSolved) {
       review.renderSentence();
     } else {
+      review.clearLinking();
       state.elements.characterSlots.setAttribute("aria-label", "听写输入区域");
       renderCharacterSlots(model);
     }

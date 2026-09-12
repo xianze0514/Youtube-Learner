@@ -1,0 +1,2253 @@
+{
+  "videoId": "h3M00JI8Iwo",
+  "audioVerified": false,
+  "rows": [
+    {
+      "segment": 1,
+      "startMs": 4201,
+      "endMs": 7171,
+      "wordCount": 9,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "j-glide"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → æ",
+            "aɪ → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "m → b"
+          ],
+          "inferredPronunciation": true
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "d → æ",
+            "d → ə"
+          ],
+          "inferredPronunciation": true
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "z → ð"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "i → w",
+            "ə → w"
+          ],
+          "inferredPronunciation": true
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "z → ɡ"
+          ],
+          "inferredPronunciation": true
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "t → m"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 8,
+          "rightIndex": 9,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → r"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 2,
+      "startMs": 7204,
+      "endMs": 8572,
+      "wordCount": 3,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "t → ɡ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "s → w"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 3,
+      "startMs": 8606,
+      "endMs": 10374,
+      "wordCount": 4,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → k"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "t → r"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → m"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 4,
+      "startMs": 10374,
+      "endMs": 13077,
+      "wordCount": 7,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "t → aɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → k"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "n → d"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "candidate",
+          "types": [
+            "w-glide"
+          ],
+          "variantDependent": true,
+          "edges": [
+            "uː → ɪ",
+            "ə → ɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "z → r"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → p"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 5,
+      "startMs": 14078,
+      "endMs": 16847,
+      "wordCount": 8,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → p"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "l → æ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "k → eɪ",
+            "k → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "eɪ → k",
+            "ə → k"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "n → ɔː"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "l → ð"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "i → t",
+            "ə → t"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 6,
+      "startMs": 16881,
+      "endMs": 19350,
+      "wordCount": 7,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "tʃ → ɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "r → j"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "uː → b",
+            "ʊ → b"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "n → w"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "candidate",
+          "types": [
+            "same-consonant"
+          ],
+          "variantDependent": true,
+          "edges": [
+            "ð → ð",
+            "θ → ð"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 7,
+      "startMs": 19817,
+      "endMs": 21652,
+      "wordCount": 8,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → ð"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "candidate",
+          "types": [
+            "j-glide"
+          ],
+          "variantDependent": true,
+          "edges": [
+            "i → æ",
+            "ə → æ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "r → ɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "z → n"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "v → k"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "s → n"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 8,
+      "startMs": 21685,
+      "endMs": 22953,
+      "wordCount": 2,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "i → n"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 9,
+      "startMs": 22987,
+      "endMs": 25723,
+      "wordCount": 7,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → d"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "uː → n",
+            "ə → n"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "t → p"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "s → e"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "i → s"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "l → p"
+          ],
+          "inferredPronunciation": true
+        }
+      ]
+    },
+    {
+      "segment": 10,
+      "startMs": 26357,
+      "endMs": 28025,
+      "wordCount": 5,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "j-glide"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → æ",
+            "aɪ → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "m → n"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "t → eɪ",
+            "t → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "eɪ → s",
+            "ə → s"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 11,
+      "startMs": 28059,
+      "endMs": 32463,
+      "wordCount": 11,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "s → ɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "z → eɪ",
+            "z → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "eɪ → l",
+            "ə → l"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "l → s"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "l → ð"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "t → aɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → f"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 8,
+          "rightIndex": 9,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "l → e"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 9,
+          "rightIndex": 10,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "n → k"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 10,
+          "rightIndex": 11,
+          "status": "candidate",
+          "types": [
+            "same-consonant"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "d → d"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 12,
+      "startMs": 32496,
+      "endMs": 36333,
+      "wordCount": 8,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "t → aɪ"
+          ],
+          "inferredPronunciation": true
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "v → ə"
+          ],
+          "inferredPronunciation": true
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → f"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "r → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "t → r"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "i → θ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "iː → d"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 13,
+      "startMs": 36367,
+      "endMs": 38836,
+      "wordCount": 6,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "t → r"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "ŋ → ð"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "i → h",
+            "ə → h"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "n → m"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 14,
+      "startMs": 39236,
+      "endMs": 42506,
+      "wordCount": 11,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "f → aɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → n"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "oʊ → h"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aʊ → j"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "uː → θ",
+            "ʊ → θ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → n"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 8,
+          "rightIndex": 9,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "oʊ → w"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 9,
+          "rightIndex": 10,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "t → j"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 10,
+          "rightIndex": 11,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "uː → θ",
+            "ʊ → θ"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 15,
+      "startMs": 42907,
+      "endMs": 46343,
+      "wordCount": 16,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "d → aɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → w"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "candidate",
+          "types": [
+            "same-consonant"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "t → t"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "candidate",
+          "types": [
+            "w-glide"
+          ],
+          "variantDependent": true,
+          "edges": [
+            "uː → æ",
+            "ə → æ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "k → iː"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "tʃ → æ",
+            "tʃ → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "d → e"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 8,
+          "rightIndex": 9,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "i → w"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 9,
+          "rightIndex": 10,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "n → ə",
+            "n → ʌ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 10,
+          "rightIndex": 11,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "v → j"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 11,
+          "rightIndex": 12,
+          "status": "candidate",
+          "types": [
+            "w-glide"
+          ],
+          "variantDependent": true,
+          "edges": [
+            "uː → ɪ",
+            "ʊ → ɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 12,
+          "rightIndex": 13,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "n → ð"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 13,
+          "rightIndex": 14,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "s → r"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 14,
+          "rightIndex": 15,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "m → eɪ",
+            "m → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 15,
+          "rightIndex": 16,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "eɪ → k",
+            "ə → k"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 16,
+      "startMs": 46377,
+      "endMs": 48312,
+      "wordCount": 9,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "t → b"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "r → w"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "i → d",
+            "iː → d"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "k → eɪ",
+            "k → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "eɪ → d",
+            "ə → d"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "p → b"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 8,
+          "rightIndex": 9,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "θ → ɪ"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 17,
+      "startMs": 48312,
+      "endMs": 49513,
+      "wordCount": 5,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "k → eɪ",
+            "k → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "eɪ → d",
+            "ə → d"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "p → b"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "θ → ɪ"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 18,
+      "startMs": 50147,
+      "endMs": 53451,
+      "wordCount": 6,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "l → aʊ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "t → æ",
+            "t → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → k"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "z → j"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "r → aɪ"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 19,
+      "startMs": 53484,
+      "endMs": 55119,
+      "wordCount": 5,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "eɪ → l",
+            "ə → l"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "l → z"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "n → m"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "punctuation-or-hyphen"
+        }
+      ]
+    },
+    {
+      "segment": 20,
+      "startMs": 55152,
+      "endMs": 56854,
+      "wordCount": 7,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → s"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "iː → ð"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "i → p",
+            "ə → p"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "l → w"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "ð → t",
+            "θ → t"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "t → ɪ"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 21,
+      "startMs": 56854,
+      "endMs": 59190,
+      "wordCount": 8,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "z → w"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "d → oʊ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "ŋ → ð"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "r → w"
+          ],
+          "inferredPronunciation": true
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "s → æ",
+            "s → ə"
+          ],
+          "inferredPronunciation": true
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → f"
+          ],
+          "inferredPronunciation": true
+        }
+      ]
+    },
+    {
+      "segment": 22,
+      "startMs": 59790,
+      "endMs": 61025,
+      "wordCount": 3,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "oʊ → n"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "missing-ipa"
+        }
+      ]
+    },
+    {
+      "segment": 23,
+      "startMs": 62960,
+      "endMs": 64128,
+      "wordCount": 4,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "r → ɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "z → m"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → k"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 24,
+      "startMs": 64128,
+      "endMs": 65563,
+      "wordCount": 5,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "f → j"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "uː → k",
+            "ʊ → k"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → h"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "v → d"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 25,
+      "startMs": 65596,
+      "endMs": 68432,
+      "wordCount": 5,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "ð → s",
+            "θ → s"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "n → f"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "punctuation-or-hyphen"
+        }
+      ]
+    },
+    {
+      "segment": 26,
+      "startMs": 68466,
+      "endMs": 70568,
+      "wordCount": 8,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "m → ə",
+            "m → ʌ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "v → j"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "uː → h",
+            "ʊ → h"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "v → h"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → ð"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "s → k"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "n → ɔː"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 27,
+      "startMs": 70601,
+      "endMs": 72570,
+      "wordCount": 8,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → d"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "t → ɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "t → ɪ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → l"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "v → æ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "ŋ → p"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 28,
+      "startMs": 72603,
+      "endMs": 74805,
+      "wordCount": 8,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "n → f"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "d → ɔː"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "r → ə"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "candidate",
+          "types": [
+            "CV"
+          ],
+          "variantDependent": false,
+          "edges": [
+            "t → ɔː"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "r → p"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    },
+    {
+      "segment": 29,
+      "startMs": 74805,
+      "endMs": 75973,
+      "wordCount": 3,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "punctuation-or-hyphen"
+        }
+      ]
+    },
+    {
+      "segment": 30,
+      "startMs": 76006,
+      "endMs": 78609,
+      "wordCount": 12,
+      "boundaries": [
+        {
+          "leftIndex": 1,
+          "rightIndex": 2,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "aɪ → l"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 2,
+          "rightIndex": 3,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "k → t"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 3,
+          "rightIndex": 4,
+          "status": "candidate",
+          "types": [
+            "w-glide"
+          ],
+          "variantDependent": true,
+          "edges": [
+            "uː → æ",
+            "ə → æ"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 4,
+          "rightIndex": 5,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "k → p"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 5,
+          "rightIndex": 6,
+          "status": "punctuation-or-hyphen"
+        },
+        {
+          "leftIndex": 6,
+          "rightIndex": 7,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "uː → w"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 7,
+          "rightIndex": 8,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "d → ð"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 8,
+          "rightIndex": 9,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "t → p"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 9,
+          "rightIndex": 10,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "n → b"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 10,
+          "rightIndex": 11,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "i → f",
+            "iː → f"
+          ],
+          "inferredPronunciation": false
+        },
+        {
+          "leftIndex": 11,
+          "rightIndex": 12,
+          "status": "no-rule-match",
+          "types": [],
+          "variantDependent": false,
+          "edges": [
+            "r → j"
+          ],
+          "inferredPronunciation": false
+        }
+      ]
+    }
+  ]
+}

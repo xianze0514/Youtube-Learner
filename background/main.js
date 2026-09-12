@@ -1,5 +1,6 @@
 import { analyzeSentence } from "./analysis.js";
 import { lookupDictionaryWord } from "./dictionary.js";
+import { getLinkingHints } from "./linking.js";
 import {
   DEEPSEEK_MODEL,
   getPublicSettings,
@@ -12,6 +13,14 @@ import { fetchTranscriptInPage } from "./youtube.js";
 import { openLearningTab, handleLearningMessage } from "./learning.js";
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message?.type === "ELT_LINKING_HINTS") {
+    if (!isTrustedExtensionPage(sender)) {
+      sendResponse({ error: "只允许在学习页面请求连读提示" });
+      return false;
+    }
+    getLinkingHints(message).then(sendResponse).catch(error => sendResponse({ error: error.message }));
+    return true;
+  }
   if (["ELT_OPEN_LEARNING", "ELT_GET_LEARNING", "ELT_LEARNING_TRANSCRIPT", "ELT_CACHE_LEARNING", "ELT_RETURN_SOURCE"].includes(message?.type)) {
     handleLearningMessage(message, sender).then(sendResponse).catch(error => sendResponse({ error: error.message }));
     return true;

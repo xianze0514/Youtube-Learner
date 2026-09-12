@@ -47,6 +47,18 @@
         3: "每正确输入一个单词，信心都会随之增长。",
       };
       window.chrome.runtime.sendMessage ||= async (message) => {
+        if (message.type === "ELT_LINKING_HINTS") {
+          // Presentation fixtures only; production uses Quark IPA + C→V rules.
+          const pairs = ["steps every", "makes unfamiliar", "grows one", "word at", "at a"];
+          const links = pairs.flatMap(pair => {
+            const start = message.targetSentence.toLowerCase().indexOf(pair);
+            if (start < 0) return [];
+            const [a, b] = pair.split(" ");
+            return [{ leftStart: start, leftEnd: start + a.length,
+              rightStart: start + a.length + 1, rightEnd: start + pair.length }];
+          });
+          return { links };
+        }
         if (message.type === "ELT_GET_SETTINGS") {
           return {
             settings: {

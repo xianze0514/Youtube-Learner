@@ -15,7 +15,7 @@ VOWELS = set('aeiouɑɒæɛɜɞəɚɝɪɔʊʌɐ')
 DIPHTHONGS = {'eɪ', 'aɪ', 'ɔɪ', 'aʊ', 'oʊ', 'əʊ', 'ɪə', 'eə', 'ʊə'}
 VOWEL_PHONES = VOWELS | DIPHTHONGS | {v + 'ː' for v in VOWELS}
 CONSONANTS = set('pbtdkgɡfvθðszʃʒhmnŋlrɹwj')
-VOICLESS = {'p', 't', 'k', 'f', 'θ'}
+VOICELESS = {'p', 't', 'k', 'f', 'θ'}
 SIBILANTS = {'s', 'z', 'ʃ', 'ʒ', 'tʃ', 'dʒ'}
 WORD = re.compile(r"[A-Za-z]+(?:['’][A-Za-z]+)*")
 
@@ -44,8 +44,8 @@ def phones(ipa):
 def suffix(ipa, kind):
     last = phones(ipa)[-1]
     if kind == 'ed':
-        return ipa + ('ɪd' if last in {'t', 'd'} else 't' if last in VOICLESS | {'s', 'ʃ', 'tʃ'} else 'd')
-    return ipa + ('ɪz' if last in SIBILANTS else 's' if last in VOICLESS else 'z')
+        return ipa + ('ɪd' if last in {'t', 'd'} else 't' if last in VOICELESS | {'s', 'ʃ', 'tʃ'} else 'd')
+    return ipa + ('ɪz' if last in SIBILANTS else 's' if last in VOICELESS else 'z')
 
 
 def resolve(word, dictionary, fallback=False):
@@ -109,7 +109,7 @@ def analyze(segment, dictionary, fallback):
         edges = sorted({phones(x)[-1] + ' → ' + phones(y)[0]
                         for x, y in itertools.product(a['ipa'], b['ipa']) if phones(x) and phones(y)})
         boundaries.append({**item, 'status': 'candidate' if kinds else 'no-rule-match',
-                           'types': kinds, 'variantDependent': None in outcomes or len(kinds) > 1,
+                           'types': kinds, 'variantDependent': bool(kinds) and (None in outcomes or len(kinds) > 1),
                            'edges': edges,
                            'inferredPronunciation': a['source'] != 'quark-direct' or b['source'] != 'quark-direct'})
     return {'startMs': segment['startMs'], 'endMs': segment['endMs'],

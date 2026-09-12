@@ -10,6 +10,9 @@
     let sessionOverlay, sessionSegments, sessionVideoId;
     let wordNodes = [];
     let activeWord = null;
+    const linkingEntries = new Map();
+    let linkingSession, linkingVideoId, observedContainer, linkingFrame = 0;
+    const resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver(scheduleLinking) : null;
     const solved = () => state.completedIndices.has(state.index);
     const requestData = (index = state.index) => ({ targetSentence: state.segments[index]?.text || "",
       previousSentence: state.segments[index - 1]?.text || "",
@@ -23,6 +26,74 @@
       return element;
     };
     const color = (element, index) => element.style.setProperty("--block-color", COLORS[index % COLORS.length]);
+
+    function prefetchLinking() {
+      if (!state.overlay || !state.segments[state.index]) return;
+      if (linkingSession !== state.segments || linkingVideoId !== state.videoId) {
+        linkingEntries.clear();
+        linkingSession = state.segments;
+        linkingVideoId = state.videoId;
+      }
+      const text = state.segments[state.index].text;
+      const cached = linkingEntries.get(text);
+      if (cached && (!cached.retryAt || Date.now() < cached.retryAt)) return;
+      const entry = { links: [] };
+      linkingEntries.set(text, entry);
+      while (linkingEntries.size > 150) linkingEntries.delete(linkingEntries.keys().next().value);
+      const segments = state.segments, overlay = state.overlay;
+      Promise.resolve().then(() => chrome.runtime.sendMessage({ type: "ELT_LINKING_HINTS", targetSentence: text }))
+        .then(result => {
+          if (result?.error || !Array.isArray(result?.links)) throw new Error("连读提示暂不可用");
+          entry.links = result.links;
+          if (result.incomplete) entry.retryAt = Date.now() + 30000;
+        }).catch(() => { entry.retryAt = Date.now() + 30000; })
+        .finally(() => {
+          if (state.overlay === overlay && state.segments === segments && linkingEntries.get(text) === entry &&
+              state.segments[state.index]?.text === text && solved()) scheduleLinking();
+        });
+    }
+
+    function scheduleLinking() {
+      if (linkingFrame || !state.overlay || !solved()) return;
+      linkingFrame = requestAnimationFrame(() => { linkingFrame = 0; drawLinking(); });
+    }
+
+    function clearLinking() {
+      if (linkingFrame) cancelAnimationFrame(linkingFrame);
+      linkingFrame = 0;
+      resizeObserver?.disconnect();
+      observedContainer = null;
+      state.elements.characterSlots?.querySelector(".elt-linking-layer")?.remove();
+    }
+
+    function drawLinking() {
+      const container = state.elements.characterSlots;
+      if (!container?.isConnected || !solved() || !container.classList.contains("elt-review-sentence")) return;
+      container.querySelector(".elt-linking-layer")?.remove();
+      const links = linkingEntries.get(state.segments[state.index]?.text)?.links || [];
+      if (!links.length) return;
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.classList.add("elt-linking-layer");
+      svg.setAttribute("aria-hidden", "true");
+      const box = container.getBoundingClientRect();
+      for (const link of links) {
+        const left = wordNodes.find(w => w.start === link.leftStart && w.end === link.leftEnd)?.element;
+        const right = wordNodes.find(w => w.start === link.rightStart && w.end === link.rightEnd)?.element;
+        if (!left || !right) continue;
+        // No arcs across line breaks, split words, or unexpectedly distant spans.
+        if (left.getClientRects().length !== 1 || right.getClientRects().length !== 1) continue;
+        const a = left.getBoundingClientRect(), b = right.getBoundingClientRect();
+        if (Math.abs(a.bottom - b.bottom) > 3 || b.left < a.right - 1 || b.left - a.right > 40) continue;
+        const x1 = a.right - box.left - 4, x2 = b.left - box.left + 4;
+        const y = Math.max(a.bottom, b.bottom) - box.top + 7;
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", `M ${x1} ${y} Q ${(x1 + x2) / 2} ${y + 12} ${x2} ${y}`);
+        path.dataset.leftStart = String(link.leftStart);
+        path.dataset.rightStart = String(link.rightStart);
+        svg.append(path);
+      }
+      if (svg.childNodes.length) container.append(svg);
+    }
 
     function prefetchAnalysis() {
       if (sessionOverlay !== state.overlay || sessionSegments !== state.segments || sessionVideoId !== state.videoId) {
@@ -90,7 +161,7 @@
         word.addEventListener("blur", dictionary.scheduleDictionaryClose);
         const start = offset + match.index;
         const timing = timings.find(item => item.start === start && item.end === start + match[0].length);
-        wordNodes.push({ element: word, timing });
+        wordNodes.push({ element: word, timing, start, end: start + match[0].length });
         parent.append(word);
       }
     }
@@ -114,6 +185,14 @@
         cursor = block.end;
       }
       addWords(container, segment.text.slice(cursor), cursor, segment.wordTimings || []);
+      if (observedContainer !== container) {
+        resizeObserver?.disconnect();
+        resizeObserver?.observe(container);
+        observedContainer = container;
+        document.fonts?.ready.then(scheduleLinking);
+      }
+      prefetchLinking();
+      scheduleLinking();
       updateHighlight();
       void ensureAnalysis();
     }
@@ -199,6 +278,6 @@
       renderPanel();
       if (view === "analysis") void ensureAnalysis();
     }
-    return { renderSentence, renderPanel, setPanelView, updateHighlight, prefetchAnalysis };
+    return { renderSentence, renderPanel, setPanelView, updateHighlight, prefetchAnalysis, prefetchLinking, clearLinking };
   };
 })();

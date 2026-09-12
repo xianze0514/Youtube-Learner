@@ -21,7 +21,9 @@
 #elt-overlay .elt-analysis-block p { color: #bcb9c9; }
 #elt-overlay .elt-is-review .elt-dictation-meta,
 #elt-overlay .elt-is-review .elt-typing-feedback { display: none; }
-#elt-overlay .elt-review-sentence { display: block; padding: 14px 0 10px; overflow: visible; color: #f4f2fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-weight: 500; line-height: 1.95; letter-spacing: 0; overflow-wrap: anywhere; }
+#elt-overlay .elt-review-sentence { position: relative; display: block; padding: 14px 0 22px; overflow: visible; color: #f4f2fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-weight: 500; line-height: 2.15; letter-spacing: 0; overflow-wrap: anywhere; }
+#elt-overlay .elt-linking-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+#elt-overlay .elt-linking-layer path { fill: none; stroke: #aaa2bc; stroke-width: 1.7; stroke-linecap: round; }
 #elt-overlay .elt-review-block { text-decoration-line: underline; text-decoration-color: var(--block-color); text-decoration-thickness: 3px; text-underline-offset: 9px; text-decoration-skip-ink: none; }
 #elt-overlay .elt-review-word { border-radius: 5px; cursor: pointer; padding: 2px 0; transition: background-color 80ms, color 80ms; }
 #elt-overlay .elt-review-word:hover, #elt-overlay .elt-review-word:focus-visible { background: #393343; outline: 1px solid #8f829f; outline-offset: 2px; }

@@ -1,4 +1,4 @@
-async function lookupDictionaryWord(rawWord) {
+async function lookupDictionaryWord(rawWord, { phoneticsOnly = false } = {}) {
   const word = String(rawWord || "")
     .trim()
     .toLocaleLowerCase();
@@ -33,6 +33,7 @@ async function lookupDictionaryWord(rawWord) {
         audioUrl: `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(word)}&type=${index + 1}`,
       }))
       .filter((item) => item.text);
+    if (phoneticsOnly) return { word: entry.entity.title || word, phonetics };
     const meanings = (entry.entity.explains?.explain_list || [])
       .map((meaning) => ({
         partOfSpeech: stripQuarkMarkup(meaning?.label) || "释义",

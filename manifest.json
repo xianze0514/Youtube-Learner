@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "English Listening Typing",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "从 YouTube 播放器一键打开独立学习页，进行原声逐句听写训练。",
   "permissions": [
     "activeTab",
