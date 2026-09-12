@@ -1,12 +1,12 @@
 (() => {
-  function createTranscriptLoader(captions, setLoadingMessage) {
+  function createTranscriptLoader(captions, setLoadingMessage, options = {}) {
     const {
-      applyWordTimingsToSegments,
+      buildPracticeSegments,
+      calibratePracticeTimings,
+      splitAtTimedSentenceBoundaries,
       collectTimedTokens,
       hasWordTiming,
-      mergeCuesIntoSentences,
       parseCaptionBody,
-      splitSegmentsForPractice,
     } = captions;
 
   async function loadSubtitleSegments(playerData) {
@@ -20,7 +20,7 @@
     let pageHtml = "";
 
     if (tracks.length === 0 || !apiKey) {
-      const response = await fetch(location.href, { credentials: "include" });
+      const response = await fetch(options.pageUrl || location.href, { credentials: "include" });
       if (!response.ok) {
         throw new Error(`视频页面读取失败（${response.status}）`);
       }
@@ -51,9 +51,9 @@
       result = { cues, track: preferredTrack, clientName: "WEB" };
     }
 
-    const segments = splitSegmentsForPractice(
-      mergeCuesIntoSentences(result.cues),
-    );
+    const segments = buildPracticeSegments(result.cues, {
+      isAutomatic: result.track?.kind === "asr",
+    });
     let timingCues = result.cues;
     let timingSource = hasWordTiming(timingCues) ? result.track : null;
 
@@ -73,16 +73,18 @@
       }
     }
 
+    const timedTokens = timingSource ? collectTimedTokens(timingCues) : [];
     const alignedSegments = timingSource
-      ? applyWordTimingsToSegments(segments, collectTimedTokens(timingCues))
+      ? splitAtTimedSentenceBoundaries(
+        calibratePracticeTimings(segments, timedTokens), timedTokens)
       : segments;
     const timingLabel = alignedSegments.some((segment) => segment.hasExactStart)
-      ? " · 逐词同步"
+      ? " · 逐词校准"
       : "";
 
     return {
-      segments: alignedSegments,
-      trackLabel: `${getTrackLabel(result.track)} · ${result.clientName}${timingLabel}`,
+      segments: captions.attachPlaybackWordTimings(alignedSegments, timedTokens),
+      trackLabel: `${getTrackLabel(result.track)} · 原字幕分段${timingLabel}`,
     };
   }
 
@@ -104,7 +106,7 @@
   async function fetchCuesViaInnerTube(videoId, apiKey, preferredTrack) {
     try {
       const pageResult = await chrome.runtime.sendMessage({
-        type: "ELT_FETCH_TRANSCRIPT",
+        type: options.standalone ? "ELT_LEARNING_TRANSCRIPT" : "ELT_FETCH_TRANSCRIPT",
         options: {
           videoId,
           apiKey,

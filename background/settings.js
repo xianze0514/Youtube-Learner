@@ -64,6 +64,7 @@ async function saveSettings(input) {
 
 async function broadcastPublicSettings(settings) {
   const tabs = await chrome.tabs.query({});
+  await chrome.runtime.sendMessage({ type: "ELT_SETTINGS_UPDATED", settings }).catch(() => {});
   await Promise.allSettled(
     tabs.map((tab) =>
       tab.id

@@ -8,8 +8,12 @@
     ).replace(/[’]/g, "'");
   }
 
+  function canLookup() {
+    return (state.showAnswer && state.phase === "typing") || state.completedIndices.has(state.index);
+  }
+
   function scheduleDictionaryLookup(word, anchor) {
-    if (!state.showAnswer || state.phase !== "typing") return;
+    if (!canLookup()) return;
     cancelDictionaryClose();
     if (state.dictionaryHoverTimer) clearTimeout(state.dictionaryHoverTimer);
     state.dictionaryHoverTimer = window.setTimeout(() => {
@@ -55,7 +59,7 @@
 
   async function lookupDictionaryWord(word, anchor) {
     const dictionary = state.elements.dictionary;
-    if (!dictionary || !state.showAnswer) return;
+    if (!dictionary || !canLookup()) return;
 
     state.dictionaryWord = word;
     state.dictionaryError = "";
@@ -80,7 +84,7 @@
         type: "ELT_LOOKUP_WORD",
         word,
       });
-      if (requestId !== state.dictionaryRequestId || !state.showAnswer) return;
+      if (requestId !== state.dictionaryRequestId || !canLookup()) return;
       if (!response?.entry) {
         throw new Error(response?.error || "没有找到这个单词");
       }

@@ -4,7 +4,7 @@
       <header class="elt-header">
         <div class="elt-brand">
           <div>
-            <strong>专注模式</strong>
+            <strong>英语精听</strong>
             <span id="elt-track-label">YouTube 原声字幕</span>
           </div>
         </div>
@@ -19,6 +19,34 @@
           <section class="elt-video-stage">
             <div id="elt-video-shell" class="elt-video-shell"></div>
 
+          </section>
+
+          <div id="elt-divider" class="elt-divider" role="separator" aria-label="调整字幕列表宽度"></div>
+
+          <aside id="elt-panel" class="elt-panel">
+            <div class="elt-panel-header">
+              <div>
+                <div class="elt-panel-tabs" role="tablist" aria-label="学习面板">
+                  <button id="elt-subtitles-tab" type="button" role="tab" aria-selected="true" aria-controls="elt-subtitle-list">字幕列表</button>
+                  <button id="elt-analysis-tab" type="button" role="tab" aria-selected="false" aria-controls="elt-analysis-panel" tabindex="-1">单句详解</button>
+                </div>
+                <p id="elt-panel-summary">训练进度</p>
+              </div>
+              <span id="elt-panel-count" class="elt-panel-count"></span>
+            </div>
+            <div id="elt-subtitle-list" class="elt-subtitle-list" role="tabpanel" aria-labelledby="elt-subtitles-tab"></div>
+            <div id="elt-analysis-panel" class="elt-analysis-panel elt-hidden" role="tabpanel" aria-labelledby="elt-analysis-tab" tabindex="0"></div>
+          <div class="elt-panel-tools">
+            <button id="elt-settings" class="elt-control-button elt-settings-button" type="button" title="训练设置" aria-label="打开训练设置">设置</button>
+            <button id="elt-sound" class="elt-control-button elt-sound-toggle" type="button" aria-pressed="true">音效 开</button>
+            <button id="elt-speed" class="elt-control-button" type="button">1×</button>
+            <span id="elt-total-mistakes" class="elt-total-mistakes">错误 0</span>
+          </div>
+            <div id="elt-panel-footer" class="elt-panel-footer">已完成字幕会自动显示，当前句与后续句保持隐藏</div>
+          </aside>
+        </div>
+
+        <section class="elt-exercise-area" aria-label="字幕拼写区">
             <div id="elt-loading" class="elt-center-state">
               <div class="elt-spinner"></div>
               <h2>正在准备训练</h2>
@@ -59,6 +87,10 @@
                 <p id="elt-phase-detail" class="elt-phase-detail"></p>
                 <div id="elt-character-slots" class="elt-character-slots" aria-label="听写输入区域"></div>
                 <div id="elt-translation" class="elt-translation elt-hidden" aria-live="polite"></div>
+                <div id="elt-sentence-context" class="elt-sentence-context elt-hidden">
+                  <button id="elt-replay-sentence" class="elt-hold-answer" type="button">连起来听</button>
+                  <p id="elt-sentence-text"></p>
+                </div>
                 <p id="elt-play-error" class="elt-play-error"></p>
                 <div class="elt-dictation-meta">
                   <span id="elt-character-count"></span>
@@ -69,22 +101,7 @@
             </div>
 
             <aside id="elt-dictionary" class="elt-dictionary elt-hidden" aria-live="polite"></aside>
-          </section>
-
-          <div id="elt-divider" class="elt-divider" role="separator" aria-label="调整字幕列表宽度"></div>
-
-          <aside id="elt-panel" class="elt-panel">
-            <div class="elt-panel-header">
-              <div>
-                <h2>字幕列表</h2>
-                <p id="elt-panel-summary">训练进度</p>
-              </div>
-              <span id="elt-panel-count" class="elt-panel-count"></span>
-            </div>
-            <div id="elt-subtitle-list" class="elt-subtitle-list"></div>
-            <div class="elt-panel-footer">已完成字幕会自动显示，当前句与后续句保持隐藏</div>
-          </aside>
-        </div>
+        </section>
 
         <footer class="elt-controls">
           <div class="elt-control-group">
@@ -99,12 +116,7 @@
               <span id="elt-shortcut-hint">直接打字 · Ctrl J 重播 · Esc 退出</span>
             </div>
           </div>
-          <div class="elt-control-group elt-control-group-right">
-            <button id="elt-settings" class="elt-control-button elt-settings-button" type="button" title="训练设置" aria-label="打开训练设置">设置</button>
-            <button id="elt-sound" class="elt-control-button elt-sound-toggle" type="button" aria-pressed="true">音效 开</button>
-            <button id="elt-speed" class="elt-control-button" type="button">1×</button>
-            <span id="elt-total-mistakes" class="elt-total-mistakes">错误 0</span>
-          </div>
+
         </footer>
       </main>
     `;

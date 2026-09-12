@@ -13,6 +13,11 @@
       renderSoundToggle,
     } = actions;
 
+    const review = globalThis.EnglishListeningTyping.createReviewController(state, dictionary, {
+      openSettings,
+      onChange() { renderTypingState(); review.renderPanel(); },
+    });
+
   function render() {
     if (!state.overlay) return;
 
@@ -36,6 +41,7 @@
     state.elements.totalMistakes.textContent = `错误 ${state.totalMistakes}`;
     state.elements.speed.textContent = `${state.video?.playbackRate || 1}×`;
     renderSoundToggle();
+    review.renderPanel();
 
     if (isComplete) {
       state.elements.completeSummary.textContent = `完成 ${state.completedIndices.size} 句，累计错误 ${state.totalMistakes} 次`;
@@ -44,10 +50,11 @@
     }
 
     if (!isPractice) return;
+    review.prefetchAnalysis();
 
     const phaseContent = {
       listening: ["先听一遍", "专心听原声，句末会自动暂停"],
-      typing: ["输入你听到的完整句子", "大小写不敏感，标点会自动跳过"],
+      typing: ["输入你听到的内容", "大小写不敏感，标点会自动跳过"],
       replaying: [
         "整句正确，正在复播",
         state.settings.completionMode === "auto"
@@ -72,6 +79,7 @@
 
     renderTypingState();
     renderCurrentTranslation();
+    renderSentenceContext();
     renderSubtitleList();
     updatePlaybackProgress();
   }
@@ -88,7 +96,36 @@
       ? "再按 Tab 隐藏答案"
       : "Tab 查看答案并查词";
     state.elements.showAnswer.disabled = state.phase !== "typing";
-    renderCharacterSlots(model);
+    const isSolved = state.completedIndices.has(state.index);
+    state.elements.shortcutHint.textContent = isSolved
+      ? "悬停查词 · Ctrl J 重播 · Enter 下一句"
+      : "直接打字 · Ctrl J 重播 · Esc 退出";
+    state.elements.practice.classList.toggle("elt-is-review", isSolved);
+    state.elements.characterSlots.classList.toggle("elt-review-sentence", isSolved);
+    if (isSolved) {
+      review.renderSentence();
+    } else {
+      state.elements.characterSlots.setAttribute("aria-label", "听写输入区域");
+      renderCharacterSlots(model);
+    }
+  }
+
+  function renderSentenceContext() {
+    const container = state.elements.sentenceContext;
+    if (!container) return;
+    const sentence = globalThis.EnglishListeningTyping.captions.getCompletedSentence(
+      state.segments, state.index, state.completedIndices,
+    );
+    container.classList.toggle("elt-hidden", !sentence);
+    state.elements.sentenceText.textContent = sentence?.text || "";
+    const isPlaying = sentence && state.phase === "reviewingPlayback" &&
+      state.playbackSegment === sentence;
+    state.elements.replaySentence.textContent = isPlaying ? "正在连听…" : "连起来听";
+    state.elements.replaySentence.disabled = Boolean(isPlaying);
+    if (isPlaying) {
+      state.elements.phaseTitle.textContent = "正在连听上下文";
+      state.elements.phaseDetail.textContent = "播放结束后停留在当前片段";
+    }
   }
 
   function renderCurrentTranslation() {
@@ -294,7 +331,8 @@
   }
 
   function updatePlaybackProgress() {
-    const segment = state.segments[state.index];
+    review.updateHighlight();
+    const segment = state.playbackSegment || state.segments[state.index];
     if (!segment || !state.video || !state.elements.progressBar) return;
     const duration = Math.max(1, segment.endMs - segment.startMs);
     const elapsed = Math.max(0, state.video.currentTime * 1000 - segment.startMs);
@@ -312,6 +350,7 @@
 
     return Object.freeze({
       render,
+      setPanelView: review.setPanelView,
       renderCurrentTranslation,
       renderTypingState,
       updatePlaybackProgress,

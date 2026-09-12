@@ -1,0 +1,18 @@
+#movie_player .elt-launch-button {
+  width: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: top;
+}
+#movie_player .elt-launch-button img {
+  width: 27px;
+  height: 27px;
+  padding: 5px;
+  box-sizing: content-box;
+  border-radius: 9px;
+  background: #a78bfa;
+}
+#movie_player .elt-launch-button:hover img { background: #c4b5fd; }
+#movie_player .elt-launch-button:focus-visible { outline: 2px solid white; outline-offset: -3px; }
+#movie_player .elt-launch-button:disabled { opacity: .5; }

@@ -1,0 +1,57 @@
+html, body { margin: 0; background: #08090d; }
+#elt-overlay { background: #08090d; }
+#elt-overlay .elt-header { height: 66px; flex-basis: 66px; background: #101116; padding: 0 28px; }
+#elt-overlay .elt-brand strong { font-size: 17px; }
+#elt-overlay .elt-workbench { padding: 20px 24px 16px; gap: 16px; background: #08090d; }
+#elt-overlay .elt-content { flex: 1 1 auto; min-height: 240px; gap: 0; }
+#elt-overlay .elt-video-stage { border: 1px solid #26272f; border-radius: 16px; }
+#elt-overlay .elt-video-shell { overflow: hidden; }
+#elt-overlay .elt-youtube-frame { display: block; width: 100%; height: 100%; border: 0; }
+#elt-overlay .elt-panel { min-width: 290px; max-width: 520px; background: #111218; border: 1px solid #282931; border-radius: 16px; overflow: hidden; }
+#elt-overlay .elt-panel-header { background: #17181f; padding: 18px 20px; }
+#elt-overlay .elt-divider { width: 20px; flex-basis: 20px; background: transparent; }
+#elt-overlay .elt-divider::after { inset: 8px 8px; border-radius: 2px; }
+#elt-overlay .elt-divider:hover::after, #elt-overlay .elt-divider-active::after { background: #8b5cf6; }
+#elt-overlay .elt-panel-tools { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; border-top: 1px solid #282931; }
+#elt-overlay .elt-panel-tools .elt-total-mistakes { margin-left: auto; align-self: center; }
+#elt-overlay .elt-exercise-area { position: relative; flex: 0 0 auto; min-height: 178px; max-height: 38vh; overflow: auto; border: 1px solid #2c2b38; border-radius: 16px; background: #14141c; }
+#elt-overlay .elt-practice { position: static; display: flex; margin: 0; padding: 0; pointer-events: auto; }
+#elt-overlay .elt-dictation-card { width: 100%; padding: 18px 28px; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
+#elt-overlay .elt-phase-title { font-size: 13px; }
+#elt-overlay .elt-phase-detail { font-size: 12px; margin-top: 7px; }
+#elt-overlay .elt-counter, #elt-overlay .elt-dictation-meta, #elt-overlay .elt-hold-answer { font-size: 12px; }
+#elt-overlay .elt-character-slots { min-height: 48px; font-size: clamp(21px, 2.1vw, 32px); }
+#elt-overlay .elt-controls { min-height: 42px; flex: 0 0 auto; border: 0; padding: 0; background: transparent; grid-template-columns: auto minmax(120px, 1fr); gap: 24px; }
+#elt-overlay .elt-control-button { font-size: 12px; }
+#elt-overlay .elt-timeline-copy { font-size: 11px; }
+#elt-overlay .elt-center-state { position: relative; min-height: 178px; padding: 20px; background: #14141c; }
+#elt-overlay .elt-center-state h2 { font-size: 18px; margin-top: 8px; }
+#elt-overlay .elt-center-state p { max-width: 650px; margin: 0 0 10px; }
+#elt-overlay .elt-center-state .elt-spinner { width: 22px; height: 22px; }
+#elt-overlay button:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 3px; }
+@media (max-width: 1000px) {
+  #elt-overlay .elt-workbench { padding: 14px; gap: 12px; }
+  #elt-overlay .elt-panel { min-width: 240px; }
+  #elt-overlay .elt-divider { width: 12px; flex-basis: 12px; }
+  #elt-overlay .elt-dictation-card { padding: 16px 20px; }
+}
+@media (max-width: 700px) {
+  #elt-overlay { position: absolute; min-height: 100vh; height: auto; overflow: auto; }
+  #elt-overlay .elt-header { padding: 0 16px; }
+  #elt-overlay .elt-content { flex-direction: column; flex: none; gap: 12px; overflow: visible; }
+  #elt-overlay .elt-video-stage { flex: none; aspect-ratio: 16 / 9; min-height: 210px; }
+  #elt-overlay .elt-panel { width: 100% !important; max-width: none; min-width: 0; height: 240px; flex: none; }
+  #elt-overlay .elt-divider { display: none; }
+  #elt-overlay .elt-exercise-area { max-height: none; }
+  #elt-overlay .elt-controls { grid-template-columns: 1fr; gap: 14px; }
+  #elt-overlay .elt-control-group { justify-content: center; }
+  #elt-overlay .elt-character-slots { font-size: 20px; }
+  #elt-overlay .elt-dictation-meta { gap: 8px; flex-wrap: wrap; }
+}
+@media (max-height: 700px) and (min-width: 701px) {
+  #elt-overlay .elt-header { height: 50px; flex-basis: 50px; }
+  #elt-overlay .elt-workbench { padding: 12px 18px; gap: 10px; overflow: auto; }
+  #elt-overlay .elt-exercise-area { min-height: 150px; }
+  #elt-overlay .elt-dictation-card { padding: 12px 20px; }
+  #elt-overlay .elt-character-slots { min-height: 36px; font-size: 24px; }
+}

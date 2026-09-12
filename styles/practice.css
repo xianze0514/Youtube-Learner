@@ -33,6 +33,21 @@
   pointer-events: auto;
 }
 
+#elt-overlay .elt-sentence-context {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+#elt-overlay .elt-sentence-context p {
+  max-height: 100px;
+  overflow-y: auto;
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 #elt-overlay .elt-phase-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);

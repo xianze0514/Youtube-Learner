@@ -56,6 +56,8 @@ function parseJson3Cues(events) {
               text: word,
               startMs: tokenStartMs + wordDuration * wordIndex,
               endMs: tokenStartMs + wordDuration * (wordIndex + 1),
+              hasEstimatedStart: wordIndex > 0,
+              hasEstimatedEnd: wordIndex < words.length - 1,
             }));
           })
         : [];
@@ -109,12 +111,12 @@ function applyWordTimingsToSegments(segments, timedTokens) {
     if (!alignment) return { ...segment };
 
     const firstMatch = alignment.matches.find(
-      (match) => match.sourceIndex === 0,
+      (match) => match.sourceIndex === 0 && !match.token.hasEstimatedStart,
     );
     const lastSourceIndex = alignment.sourceWordCount - 1;
     const lastMatch = [...alignment.matches]
       .reverse()
-      .find((match) => match.sourceIndex === lastSourceIndex);
+      .find((match) => match.sourceIndex === lastSourceIndex && !match.token.hasEstimatedEnd);
     const finalMatch = alignment.matches[alignment.matches.length - 1];
     if (finalMatch) {
       nextTimingIndex = Math.max(nextTimingIndex, finalMatch.token.timingIndex + 1);
@@ -433,6 +435,243 @@ function mergeCuesIntoSentences(cues) {
   return repairDanglingSentenceFragments(results)
     .filter((segment) => segment.text.length > 0)
     .map((segment, index) => ({ ...segment, id: index }));
+}
+
+// 原字幕是练习时间轴的依据；句子归属仅用于上下文与连听。
+// 人工字幕不得经过滚动去重，否则真实的重复表达也可能被删掉。
+function buildPracticeSegments(cues, { isAutomatic = false } = {}) {
+  const sourceCues = cues
+    .map((cue, sourceIndex) => ({
+      ...cue,
+      text: stripNonSpeechCues(String(cue.text || "")).trim(),
+      sourceCues: [{ index: sourceIndex, text: cue.text, startMs: cue.startMs, endMs: cue.endMs }],
+      hasEstimatedStart: false,
+    }))
+    .filter((cue) => cue.text && Number.isFinite(cue.startMs) &&
+      Number.isFinite(cue.endMs) && cue.endMs > cue.startMs)
+    .sort((a, b) => a.startMs - b.startMs);
+  const prepared = [];
+  for (const cue of sourceCues) {
+    const previous = prepared.at(-1);
+    const overlap = previous ? findCaptionWordOverlap(previous.text, cue.text) : 0;
+    if (isAutomatic && previous && cue.startMs < previous.endMs &&
+      overlap > 0) {
+      const words = getWordsWithOffsets(cue.text);
+      const alignment = overlap < words.length
+        ? alignSegmentWords(cue.text, collectTimedTokens([cue])) : null;
+      const nextWord = alignment?.coverage >= 0.9 && alignment.matches.find((match) =>
+        match.sourceIndex === overlap && !match.token.hasEstimatedStart);
+      if (nextWord && nextWord.token.startMs > previous.startMs &&
+        nextWord.token.startMs < cue.endMs) {
+        // 滚动字幕只在已知的新词时间处分开，避免重叠事件累积成一大段。
+        previous.endMs = nextWord.token.startMs;
+        prepared.push({ ...cue, text: cue.text.slice(words[overlap].start),
+          startMs: nextWord.token.startMs });
+        continue;
+      }
+      previous.text = joinCaptionText(previous.text, cue.text);
+      previous.endMs = Math.max(previous.endMs, cue.endMs);
+      previous.sourceCues.push(...cue.sourceCues);
+      previous.tokens = [...(previous.tokens || []), ...(cue.tokens || [])];
+    } else {
+      prepared.push(cue);
+    }
+  }
+
+  const groups = [];
+  let group = [];
+  prepared.forEach((cue, index) => {
+    group.push(cue);
+    const next = prepared[index + 1];
+    const endsInAbbreviation = /(?:^|\s)(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|e\.g|i\.e)\.$/i.test(cue.text);
+    if (!next || (hasTerminalSentencePunctuation(cue.text) && !endsInAbbreviation) ||
+      next.startMs - cue.endMs >= HARD_SENTENCE_GAP_MS ||
+      cue.endMs - group[0].startMs >= MAX_SENTENCE_DURATION_MS) {
+      groups.push(group);
+      group = [];
+    }
+  });
+
+  return groups.flatMap((items, sentenceId) => {
+    const practice = [];
+    for (const cue of items) {
+      const previous = practice.at(-1);
+      // 仅修复很短的连续残片，完整短句（例如 We did that.）独立保留。
+      const tiny = previous && (getAlignmentWords(previous.text).length <= 2 ||
+        getAlignmentWords(cue.text).length <= 2);
+      if (tiny && !hasTerminalSentencePunctuation(previous.text) &&
+        cue.startMs >= previous.endMs && cue.startMs - previous.endMs <= 350 &&
+        getAlignmentWords(previous.text + " " + cue.text).length <= 16 &&
+        cue.endMs - previous.startMs <= PRACTICE_MAX_DURATION_MS) {
+        previous.text = joinCaptionTextWithoutOverlap(previous.text, cue.text);
+        previous.endMs = cue.endMs;
+        previous.sourceCues.push(...cue.sourceCues);
+      } else {
+        practice.push({ ...cue, sourceCues: [...cue.sourceCues] });
+      }
+    }
+    const sentence = {
+      id: sentenceId,
+      text: items.map((item) => item.text).join(" "),
+      startMs: items[0].startMs,
+      endMs: Math.max(...items.map((item) => item.endMs)),
+    };
+    return practice.map((segment) => ({ ...segment, sentence }));
+  }).map((segment, id) => ({ ...segment, id }));
+}
+
+// 字幕显示时间不等于发音时间。保留文本分段，单独校准所有 cue 的播放时间。
+function calibratePracticeTimings(segments, timedTokens) {
+  if (!segments.length || !timedTokens.length) return segments;
+  const anchors = [];
+  let nextTimingIndex = 0;
+  for (const segment of segments) {
+    const candidates = timedTokens.filter((token) =>
+      token.timingIndex >= nextTimingIndex &&
+      token.startMs >= segment.startMs - TIMING_ALIGNMENT_WINDOW_BEFORE_MS &&
+      token.startMs <= segment.endMs + TIMING_ALIGNMENT_WINDOW_AFTER_MS);
+    const alignment = alignSegmentWords(segment.text, candidates);
+    const first = alignment?.matches[0];
+    const last = alignment?.matches.at(-1);
+    const sourceWords = getAlignmentWords(segment.text);
+    const exactCoverage = alignment ? alignment.matches.filter((match) =>
+      sourceWords[match.sourceIndex] === normalizeAlignmentWord(match.token.text)
+    ).length / sourceWords.length : 0;
+    const reliable = alignment?.coverage >= 0.9 &&
+      exactCoverage >= 0.9 &&
+      first.sourceIndex === 0 && !first.token.hasEstimatedStart &&
+      sourceWords[0] === normalizeAlignmentWord(first.token.text) &&
+      last.sourceIndex === alignment.sourceWordCount - 1 &&
+      sourceWords.at(-1) === normalizeAlignmentWord(last.token.text) &&
+      !last.token.hasEstimatedStart && !last.token.hasEstimatedEnd &&
+      alignment.matches.every((match, index, matches) => !index ||
+        match.token.startMs > matches[index - 1].token.startMs) &&
+      Math.abs(first.token.startMs - segment.startMs) <= TIMING_ALIGNMENT_WINDOW_BEFORE_MS;
+    if (!reliable) {
+      anchors.push(null);
+      continue;
+    }
+    // ASR 末词的 event 结束时间可能包含下一行；不能把它当作词的持续时间。
+    const following = timedTokens.find((token) =>
+      token.timingIndex > last.token.timingIndex && !token.hasEstimatedStart &&
+      token.startMs > last.token.startMs);
+    const endMs = Math.min(last.token.endMs, following?.startMs ?? Infinity);
+    if (endMs <= last.token.startMs ||
+      Math.abs(endMs - segment.endMs) > TIMING_ALIGNMENT_WINDOW_AFTER_MS) {
+      anchors.push(null);
+      continue;
+    }
+    anchors.push({ startMs: first.token.startMs, endMs,
+      lastStartMs: last.token.startMs, confidence: alignment.coverage });
+    nextTimingIndex = last.token.timingIndex + 1;
+  }
+
+  // 校准不能跨过未校准邻句的首词；不一致时局部回退，而不是强行裁剪。
+  let changed;
+  do {
+    changed = false;
+    for (let index = 1; index < segments.length; index += 1) {
+      const previous = anchors[index - 1];
+      const current = anchors[index];
+      if (!previous && !current) continue;
+      const previousStart = previous?.startMs ?? segments[index - 1].startMs;
+      const start = current?.startMs ?? segments[index].startMs;
+      if (start <= previousStart || (previous && start <= previous.lastStartMs) ||
+        (!previous && start < segments[index - 1].endMs) ||
+        (!current && previous.endMs > start)) {
+        anchors[index - 1] = null;
+        anchors[index] = null;
+        changed = true;
+      }
+    }
+  } while (changed);
+
+  const calibrated = segments.map((segment, index) => {
+    const anchor = anchors[index];
+    if (!anchor) return { ...segment };
+    const next = segments[index + 1];
+    const nextAnchor = anchors[index + 1];
+    let endMs = anchor.endMs;
+    if (nextAnchor && next.startMs - segment.endMs < HARD_SENTENCE_GAP_MS) {
+      // 两边都验证过时使用同一个边界，避免多播下一句或吞掉它的开头。
+      endMs = nextAnchor.startMs;
+    } else if (next) {
+      endMs = Math.min(endMs, nextAnchor?.startMs ?? next.startMs);
+    }
+    return { ...segment, startMs: anchor.startMs, endMs,
+      hasExactStart: true, hasExactEnd: true, hasEstimatedStart: false,
+      timingCalibrated: true, timingConfidence: anchor.confidence };
+  });
+  // 连起来听也必须使用校准后的起止时间，而非原字幕显示时间。
+  const groups = new Map();
+  for (const segment of calibrated) {
+    if (!segment.sentence) continue;
+    const group = groups.get(segment.sentence.id);
+    if (group) {
+      group.startMs = Math.min(group.startMs, segment.startMs);
+      group.endMs = Math.max(group.endMs, segment.endMs);
+    } else {
+      groups.set(segment.sentence.id, { ...segment.sentence,
+        startMs: segment.startMs, endMs: segment.endMs });
+    }
+  }
+  return calibrated.map((segment) => ({ ...segment,
+    ...(segment.sentence ? { sentence: groups.get(segment.sentence.id) } : {}) }));
+}
+
+// 只在已有句末标点处分句，并要求每个边界都有可靠的逐词对齐。
+// 无法验证时保留整条字幕；禁止按字数比例生成可播放的边界。
+function splitAtTimedSentenceBoundaries(segments, timedTokens) {
+  return segments.flatMap((segment) => {
+    const parts = splitCueIntoSentenceFragments(segment);
+    if (parts.length <= 1) return [segment];
+    const aligned = applyWordTimingsToSegments(parts, timedTokens);
+    const reliable = aligned.every((part, index) =>
+      part.hasExactStart && part.hasExactEnd && part.timingConfidence >= 0.9 &&
+      part.startMs >= segment.startMs - 120 && part.endMs <= segment.endMs + 120 &&
+      (index === 0 || part.startMs > segment.startMs) &&
+      (index === aligned.length - 1 || part.endMs < segment.endMs) &&
+      part.endMs > part.startMs &&
+      (!index || part.startMs >= aligned[index - 1].endMs));
+    if (!reliable) return [segment];
+    // 保留外边界，内部边界取下一句首词；这些边界不再标记为估算。
+    return aligned.map((part, index) => ({
+      ...part,
+      startMs: index === 0 ? segment.startMs : part.startMs,
+      endMs: index === aligned.length - 1 ? segment.endMs : part.endMs,
+      hasEstimatedStart: false,
+    }));
+  }).map((segment, id) => ({ ...segment, id }));
+}
+
+// Retain source character offsets and only reliable, exact word matches for replay.
+function attachPlaybackWordTimings(segments, timedTokens) {
+  return segments.map(segment => {
+    const candidates = timedTokens.filter(token => token.startMs >= segment.startMs - 120 &&
+      token.startMs < segment.endMs && token.endMs > segment.startMs);
+    const words = getWordsWithOffsets(segment.text);
+    const alignment = alignSegmentWords(segment.text, candidates);
+    const matches = alignment?.matches || [];
+    const exact = matches.filter(({ sourceIndex, token }) =>
+      words[sourceIndex]?.normalized === normalizeAlignmentWord(token.text));
+    if (!words.length || exact.length / words.length < 0.9) return { ...segment, wordTimings: [] };
+    const wordTimings = exact.flatMap(({ sourceIndex, token }, index) => {
+      if (token.hasEstimatedStart || token.hasEstimatedEnd) return [];
+      const endMs = Math.min(token.endMs, exact[index + 1]?.token.startMs ?? Infinity, segment.endMs);
+      if (endMs <= token.startMs) return [];
+      return [{ start: words[sourceIndex].start, end: words[sourceIndex].end,
+        startMs: Math.max(segment.startMs, token.startMs), endMs }];
+    });
+    return { ...segment, wordTimings };
+  });
+}
+
+function getCompletedSentence(segments, index, completedIndices) {
+  const sentence = segments[index]?.sentence;
+  if (!sentence || !completedIndices.has(index)) return null;
+  const related = segments.filter((segment) => segment.sentence?.id === sentence.id);
+  if (related.length < 2 || !related.every((segment) => completedIndices.has(segment.id))) return null;
+  return sentence;
 }
 
 function splitSegmentsForPractice(segments) {
@@ -961,6 +1200,11 @@ function findStartingIndex(segments, currentTimeMs) {
 }
 
   const api = Object.freeze({
+    buildPracticeSegments,
+    calibratePracticeTimings,
+    splitAtTimedSentenceBoundaries,
+    getCompletedSentence,
+    attachPlaybackWordTimings,
     parseCaptionBody,
     hasWordTiming,
     collectTimedTokens,

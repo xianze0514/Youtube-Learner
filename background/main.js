@@ -1,3 +1,4 @@
+import { analyzeSentence } from "./analysis.js";
 import { lookupDictionaryWord } from "./dictionary.js";
 import {
   DEEPSEEK_MODEL,
@@ -7,9 +8,25 @@ import {
   saveSettings,
 } from "./settings.js";
 import { requestDeepSeekTranslations, translateSegments } from "./translation.js";
-import { fetchTranscriptInPage, readPlayerData, sendToggleMessage } from "./youtube.js";
+import { fetchTranscriptInPage } from "./youtube.js";
+import { openLearningTab, handleLearningMessage } from "./learning.js";
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (["ELT_OPEN_LEARNING", "ELT_GET_LEARNING", "ELT_LEARNING_TRANSCRIPT", "ELT_CACHE_LEARNING", "ELT_RETURN_SOURCE"].includes(message?.type)) {
+    handleLearningMessage(message, sender).then(sendResponse).catch(error => sendResponse({ error: error.message }));
+    return true;
+  }
+
+  if (message?.type === "ELT_ANALYZE_SENTENCE") {
+    if (!isTrustedExtensionPage(sender)) {
+      sendResponse({ error: "只允许在学习页面请求详解" });
+      return false;
+    }
+    analyzeSentence(message).then(sendResponse)
+      .catch(error => sendResponse({ error: error.message }));
+    return true;
+  }
+
   if (message?.type === "ELT_GET_SETTINGS") {
     loadSettings()
       .then((settings) => sendResponse({ settings: getPublicSettings(settings) }))
@@ -101,7 +118,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message?.type === "ELT_TRANSLATE_SEGMENTS") {
     const senderUrl = String(sender?.url || sender?.tab?.url || "");
-    if (!senderUrl.startsWith("https://www.youtube.com/")) {
+    if (!senderUrl.startsWith("https://www.youtube.com/") && !isTrustedExtensionPage(sender)) {
       sendResponse({ error: "只允许在 YouTube 训练页面请求翻译" });
       return false;
     }
@@ -151,8 +168,7 @@ chrome.action.onClicked.addListener(async (tab) => {
   }
 
   try {
-    const playerData = await readPlayerData(tab.id);
-    await sendToggleMessage(tab.id, playerData);
+    await openLearningTab(tab);
   } catch (error) {
     console.error("[English Listening Typing] 无法启动训练：", error);
   }

@@ -23,6 +23,8 @@ async function readPlayerData(tabId) {
 
         return {
           videoId,
+          title: playerResponse?.videoDetails?.title || document.title.replace(/\s*-\s*YouTube\s*$/, ""),
+          currentTime: player?.classList.contains("ad-showing") ? 0 : (document.querySelector("video")?.currentTime || 0),
           apiKey,
           captionTracks: Array.isArray(tracks)
             ? tracks.map((track) => ({
@@ -60,6 +62,7 @@ async function sendToggleMessage(tabId, playerData) {
       "styles/dictionary.css",
       "styles/controls.css",
       "styles/responsive.css",
+      "styles/review.css",
     ],
   });
   await chrome.scripting.executeScript({
@@ -69,6 +72,7 @@ async function sendToggleMessage(tabId, playerData) {
       "content/transcript.js",
       "content/template.js",
       "content/dictionary.js",
+      "content/review.js",
       "content/renderer.js",
       "content/audio.js",
       "content/main.js",
