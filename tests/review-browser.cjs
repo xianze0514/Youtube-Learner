@@ -20,7 +20,7 @@ const vm = require('node:vm');
     const original=chrome.runtime.sendMessage;
     window.afterLoadAnalysisCalls=0;
     chrome.runtime.sendMessage=message=>{
-      if(message.type==='ELT_ANALYZE_SENTENCE') window.afterLoadAnalysisCalls++;
+      if(message.type==='ELT_ANALYZE_SENTENCE' && message.targetSentence===__ELT_TEST_API__.state.segments[0].text) window.afterLoadAnalysisCalls++;
       return original(message);
     };
   });
@@ -60,7 +60,7 @@ const vm = require('node:vm');
   await page.waitForFunction(()=>__ELT_TEST_API__.state.phase==='reviewing');
   assert.equal(await page.locator('.elt-word-playing').count(),0);
   await page.waitForTimeout(900);
-  await page.locator('.elt-analysis-heading').scrollIntoViewIfNeeded();
+  await page.locator('.elt-analysis-heading').first().scrollIntoViewIfNeeded();
   await page.screenshot({path:'/tmp/elt-review-desktop.png'});
   await page.locator('#elt-replay').click();
   await page.evaluate(()=>{__ELT_TEST_API__.state.video.currentTime=2.9;});
@@ -138,9 +138,12 @@ const vm = require('node:vm');
   const validationContext=vm.createContext({Map});
   vm.runInContext(fs.readFileSync('background/analysis.js','utf8').replace(/^import .*;\n/gm,'').replace(/export /g,''),validationContext);
   const quotedText='which is, “Were you born with this?”';
+  const phrase=orig=>({orig,type:'短语',role:'句内成分',relation:'属于当前片段',trans:'释义',expl:'用法解释',children:[]});
   const analysis=validationContext.validateAnalysis({
-    explanation:{translation:'也就是，“你天生就是这样吗？”',meaning:'询问天赋。',grammar:'一般过去时疑问句。'},
-    blocks:['which is,','“','Were','you','born with','this','?','”'].map(orig=>({orig,baseform:orig,partofspeech:'短语',trans:'释义',expl:'用法解释'})),
+    schemaVersion:2,
+    explanation:{translation:'也就是，“你天生就是这样吗？”',meaning:'询问天赋。',grammar:'一般过去时疑问句。',status:'fragment'},
+    structure:{...phrase(quotedText),children:['which is,','“','Were','you','born with','this','?','”'].map(phrase)},
+    vocabulary:[],annotations:[],
   },quotedText);
   await page.goto('http://127.0.0.1:4178/preview.html');
   await page.evaluate(async({text,analysis})=>{
@@ -158,6 +161,78 @@ const vm = require('node:vm');
   assert(await page.evaluate(()=>[...document.querySelectorAll('.elt-review-block')].every((block,i)=>
     /[\p{L}\p{N}]/u.test(block.textContent) && block.style.getPropertyValue('--block-color')===
       document.querySelectorAll('.elt-analysis-block')[i].style.getPropertyValue('--block-color'))),'only lexical blocks are underlined, with matching card colors');
+
+  assert.match(await page.locator('.elt-analysis-notice').innerText(),/字幕片段/);
+
+  // Reported failure: preserve usable parent groups if the model splits contractions.
+  const contractionFixture=JSON.parse(fs.readFileSync('tests/fixtures/syntax-analysis.json','utf8')).contractions;
+  const brokenContractions=JSON.parse(JSON.stringify(contractionFixture));
+  brokenContractions.structure.children[0].children=[phrase('She'),phrase("'s like,")];
+  brokenContractions.structure.children[1].children=[phrase('I'),phrase("'m giving"),phrase('the mentalist'),phrase('nothing.')];
+  const partialContractions=validationContext.validateAnalysis(brokenContractions,contractionFixture.structure.orig,{allowPartial:true});
+  const completeContractions=validationContext.validateAnalysis(contractionFixture,contractionFixture.structure.orig);
+  await page.goto('http://127.0.0.1:4178/preview.html');
+  await page.evaluate(async({partial,complete,text})=>{
+    const original=chrome.runtime.sendMessage;
+    window.contractionRequests=0;
+    chrome.runtime.sendMessage=message=>{
+      if(message.type==='ELT_ANALYZE_SENTENCE' && message.targetSentence===text) {
+        return Promise.resolve({analysis:++window.contractionRequests===1?partial:complete});
+      }
+      return original(message);
+    };
+    const api=__ELT_TEST_API__;
+    api.state.segments[0].text=text;
+    api.state.settings.translationEnabled=false;
+    api.state.completedIndices.add(0);
+    await api.playSegment(0,'reviewingPlayback',false);
+  },{partial:partialContractions,complete:completeContractions,text:contractionFixture.structure.orig});
+  await page.locator('#elt-analysis-tab').click();
+  await page.getByRole('button',{name:'重试完整结构',exact:true}).waitFor();
+  assert.equal(await page.getByText('暂时无法生成详解',{exact:true}).count(),0);
+  assert.equal(await page.locator('.elt-review-block').count(),2);
+  assert.equal(await page.locator('.elt-analysis-block > details').count(),0,'unsafe child splits are not exposed');
+  assert.equal(await page.locator('#elt-character-slots').textContent(),contractionFixture.structure.orig);
+  assert((await page.locator('.elt-review-word').allTextContents()).includes("She's"));
+  await page.getByRole('button',{name:'重试完整结构',exact:true}).click();
+  await page.waitForFunction(()=>window.contractionRequests===2 && !document.querySelector('.elt-analysis-notice'));
+  await page.waitForFunction(()=>document.querySelectorAll('.elt-syntax-separator').length===2);
+  assert((await page.locator('.elt-analysis-child-source').allTextContents()).includes("I'm giving"));
+  assert.equal(await page.locator('#elt-character-slots').textContent(),contractionFixture.structure.orig);
+  await page.screenshot({path:'/tmp/elt-contraction-recovery.png'});
+
+  // The user's question is grouped into a frame + embedded coordinated content,
+  // with internal clauses visible by default and separate nonlocal relations.
+  const fixtures=JSON.parse(fs.readFileSync('tests/fixtures/syntax-analysis.json','utf8'));
+  const questionText=fixtures.question.structure.orig;
+  await page.goto('http://127.0.0.1:4178/preview.html?scenario=syntax');
+  await page.waitForFunction(()=>document.querySelectorAll('.elt-review-block').length===2);
+  await page.locator('#elt-analysis-tab').click();
+  assert.deepEqual(await page.locator('.elt-review-block').allTextContents(),['did you have any idea','who I was or what I was going to do?']);
+  assert.equal(await page.locator('.elt-analysis-notice').count(),0);
+  assert.equal(await page.locator('.elt-review-word').count(),15,'word lookup remains independent of grouping');
+  assert.equal(await page.locator('.elt-analysis-block > .elt-analysis-details[open]').count(),2,'both outer groups show their internal structure by default');
+  const contentGroup=page.locator('.elt-analysis-block').nth(1);
+  assert(await contentGroup.getByText('who I was',{exact:true}).isVisible());
+  const secondClause=contentGroup.locator('.elt-analysis-child').filter({has:page.locator('.elt-analysis-child-source',{hasText:/^what I was going to do\?$/})}).first();
+  assert(await secondClause.getByText('was going to do?',{exact:true}).isVisible());
+  assert(await secondClause.getByText('动词结构 · 谓语部分',{exact:true}).isVisible());
+  await page.locator('#elt-subtitles-tab').click();
+  await page.locator('#elt-analysis-tab').click();
+  assert.equal(await page.locator('.elt-analysis-details[open]').count(),4,'all open levels survive panel switching');
+  const reference=page.getByRole('button',{name:'在原句中标出：did … have',exact:true});
+  await reference.focus();
+  assert.deepEqual(await page.locator('.elt-word-related').allTextContents(),['did','have'],'only linked spans highlighted; subject is not swallowed');
+  await page.locator('#elt-analysis-tab').focus();
+  assert.equal(await page.locator('.elt-word-related').count(),0);
+  await page.getByText('词汇与词形 · 2 个词',{exact:true}).click();
+  assert(await page.locator('.elt-analysis-vocabulary').first().isVisible());
+  await page.locator('.elt-analysis-block').nth(1).scrollIntoViewIfNeeded();
+  await page.screenshot({path:'/tmp/elt-syntax-desktop.png'});
+  await page.setViewportSize({width:390,height:844});
+  await page.screenshot({path:'/tmp/elt-syntax-mobile.png',fullPage:true});
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'nested structure fits narrow screens');
+  assert(await page.evaluate(()=>{const panel=document.querySelector('.elt-analysis-panel');return panel.scrollWidth<=panel.clientWidth;}),'expanded cards have no horizontal overflow');
 
   await page.goto('http://127.0.0.1:4178/preview.html?scenario=review');
   await page.locator('.elt-review-block').first().waitFor();

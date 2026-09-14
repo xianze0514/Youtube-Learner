@@ -1,0 +1,429 @@
+{
+  "simple": {
+    "schemaVersion": 2,
+    "explanation": {
+      "translation": "每天迈出一小步，就会带来显著的进步。",
+      "meaning": "强调日常行动的积累会带来长期进步。",
+      "grammar": "Small steps 是主语，every day 是时间状语；lead 后接 to remarkable progress，说明带来的结果。",
+      "status": "complete"
+    },
+    "structure": {
+      "orig": "Small steps every day lead to remarkable progress.",
+      "type": "陈述句",
+      "role": "整句",
+      "relation": "整句",
+      "trans": "每天迈出一小步，就会带来显著的进步。",
+      "expl": "Small steps 是主语，every day 是时间状语；lead 后接 to remarkable progress，说明带来的结果。",
+      "children": [
+        {
+          "orig": "Small steps",
+          "type": "名词短语",
+          "role": "主语",
+          "relation": "主语",
+          "trans": "小小的行动",
+          "expl": "small 修饰 steps；整个名词短语作 lead 的主语。",
+          "children": []
+        },
+        {
+          "orig": "every day",
+          "type": "名词短语",
+          "role": "时间状语",
+          "relation": "时间状语",
+          "trans": "每天",
+          "expl": "修饰主句，说明这些行动每天发生。",
+          "children": []
+        },
+        {
+          "orig": "lead",
+          "type": "动词",
+          "role": "谓语动词",
+          "relation": "谓语动词",
+          "trans": "促成",
+          "expl": "与后面的 to 构成 lead to，表示带来某种结果。",
+          "children": []
+        },
+        {
+          "orig": "to remarkable progress.",
+          "type": "介词短语",
+          "role": "动词补足成分",
+          "relation": "动词补足成分",
+          "trans": "带来显著的进步",
+          "expl": "整个介词短语接在 lead 后，说明结果。",
+          "children": [
+            {
+              "orig": "to",
+              "type": "介词",
+              "role": "介词中心词",
+              "relation": "介词中心词",
+              "trans": "通向",
+              "expl": "引出后面的结果，和 lead 搭配。",
+              "children": []
+            },
+            {
+              "orig": "remarkable progress.",
+              "type": "名词短语",
+              "role": "介词宾语",
+              "relation": "介词宾语",
+              "trans": "显著的进步",
+              "expl": "remarkable 修饰不可数名词 progress；整个短语作 to 的宾语。",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    "vocabulary": [
+      {
+        "orig": "steps",
+        "occurrence": 1,
+        "lemma": "step",
+        "pos": "名词",
+        "morphology": "复数",
+        "trans": "小小的行动"
+      },
+      {
+        "orig": "progress",
+        "occurrence": 1,
+        "lemma": "progress",
+        "pos": "名词",
+        "morphology": "原形；不可数",
+        "trans": "进步"
+      }
+    ],
+    "annotations": [
+      {
+        "kind": "expression",
+        "title": "lead to + 名词",
+        "expl": "表示导致、带来；这里的 to 是介词。",
+        "parts": [
+          {
+            "orig": "lead to",
+            "occurrence": 1
+          }
+        ]
+      },
+      {
+        "kind": "grammar",
+        "title": "一般现在时",
+        "expl": "表达日常积累的普遍作用。复数主语 steps 对应动词原形 lead。",
+        "parts": [
+          {
+            "orig": "Small steps",
+            "occurrence": 1
+          },
+          {
+            "orig": "lead",
+            "occurrence": 1
+          }
+        ]
+      }
+    ]
+  },
+  "question": {
+    "schemaVersion": 2,
+    "explanation": {
+      "translation": "你当时知道我是谁，或者我打算做什么吗？",
+      "meaning": "说话者在回顾过去，询问对方当时是否了解自己的身份或接下来的打算。",
+      "grammar": "主句用 did 提问；idea 后嵌入两个由 or 连接的疑问内容从句。嵌入从句采用陈述语序。",
+      "status": "complete"
+    },
+    "structure": {
+      "orig": "did you have any idea who I was or what I was going to do?",
+      "type": "疑问句",
+      "role": "整句",
+      "relation": "整句",
+      "trans": "你当时知道我是谁，或者我打算做什么吗？",
+      "expl": "主句用 did 提问；idea 后嵌入两个由 or 连接的疑问内容从句。嵌入从句采用陈述语序。",
+      "children": [
+        {
+          "orig": "did you have any idea",
+          "type": "主句框架",
+          "role": "主句的提问框架",
+          "relation": "主句的提问框架",
+          "trans": "你当时知道吗",
+          "expl": "这是带省略内容位置的展示框架；idea 的具体内容由后面的两个并列从句补充。",
+          "children": [
+            {
+              "orig": "did",
+              "type": "助动词",
+              "role": "疑问助动词",
+              "relation": "疑问助动词",
+              "trans": "过去是否",
+              "expl": "移到主语 you 前，与 have 共同构成过去时疑问结构。",
+              "children": []
+            },
+            {
+              "orig": "you",
+              "type": "代词",
+              "role": "主语",
+              "relation": "主语",
+              "trans": "你",
+              "expl": "主句中 have 的主语。",
+              "children": []
+            },
+            {
+              "orig": "have",
+              "type": "动词",
+              "role": "谓语动词",
+              "relation": "谓语动词",
+              "trans": "有；知道",
+              "expl": "在 did 后使用原形；宾语是 any idea 及其后续内容。",
+              "children": []
+            },
+            {
+              "orig": "any idea",
+              "type": "名词短语",
+              "role": "宾语的名词核心部分",
+              "relation": "宾语的名词核心部分",
+              "trans": "任何概念",
+              "expl": "作 have 的宾语核心，后面的内容从句说明 idea 的具体内容。",
+              "children": []
+            }
+          ]
+        },
+        {
+          "orig": "who I was or what I was going to do?",
+          "type": "并列内容从句组",
+          "role": "补充 idea 的内容",
+          "relation": "嵌入主句，补充说明 idea；内部两个从句并列",
+          "trans": "我是谁，或者我打算做什么",
+          "expl": "两个嵌入的疑问内容从句由 or 并列连接，共同说明主句 idea 的内容。",
+          "children": [
+            {
+              "orig": "who I was",
+              "type": "疑问内容从句",
+              "role": "第一个并列项",
+              "relation": "第一个并列项",
+              "trans": "我是谁",
+              "expl": "使用从句语序 I was；who 表示所询问的身份。",
+              "children": [
+                {
+                  "orig": "who",
+                  "type": "疑问代词",
+                  "role": "前置表语",
+                  "relation": "前置表语",
+                  "trans": "谁",
+                  "expl": "询问 I 的身份，与系动词 was 关联。",
+                  "children": []
+                },
+                {
+                  "orig": "I",
+                  "type": "代词",
+                  "role": "主语",
+                  "relation": "主语",
+                  "trans": "我",
+                  "expl": "此从句的主语。",
+                  "children": []
+                },
+                {
+                  "orig": "was",
+                  "type": "系动词",
+                  "role": "谓语中的系动词",
+                  "relation": "谓语中的系动词",
+                  "trans": "是",
+                  "expl": "连接主语 I 与前置的身份表语 who。",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "orig": "or",
+              "type": "并列连词",
+              "role": "连接两个从句",
+              "relation": "连接两个从句",
+              "trans": "或者",
+              "expl": "连接 who I was 与 what I was going to do。",
+              "children": []
+            },
+            {
+              "orig": "what I was going to do?",
+              "type": "疑问内容从句",
+              "role": "第二个并列项",
+              "relation": "第二个并列项",
+              "trans": "我打算做什么",
+              "expl": "与前一个从句并列；what 是 do 的前置宾语。",
+              "children": [
+                {
+                  "orig": "what",
+                  "type": "疑问代词",
+                  "role": "前置宾语",
+                  "relation": "前置宾语",
+                  "trans": "什么",
+                  "expl": "作 do 的宾语，位于从句开头。",
+                  "children": []
+                },
+                {
+                  "orig": "I",
+                  "type": "代词",
+                  "role": "主语",
+                  "relation": "主语",
+                  "trans": "我",
+                  "expl": "此从句的主语。",
+                  "children": []
+                },
+                {
+                  "orig": "was going to do?",
+                  "type": "动词结构",
+                  "role": "谓语部分",
+                  "relation": "谓语部分",
+                  "trans": "当时打算做",
+                  "expl": "was going to + 动词原形，表达过去视角下的打算。",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "vocabulary": [
+      {
+        "orig": "did",
+        "occurrence": 1,
+        "lemma": "do",
+        "pos": "助动词",
+        "morphology": "过去式",
+        "trans": "构成过去时疑问"
+      },
+      {
+        "orig": "idea",
+        "occurrence": 1,
+        "lemma": "idea",
+        "pos": "名词",
+        "morphology": "单数",
+        "trans": "了解；概念"
+      }
+    ],
+    "annotations": [
+      {
+        "kind": "relation",
+        "title": "主句的疑问倒装",
+        "expl": "did 位于主语 you 前，与 have 关联；不能为了合并动词把 you 当成谓语的一部分。",
+        "parts": [
+          {
+            "orig": "did",
+            "occurrence": 1
+          },
+          {
+            "orig": "have",
+            "occurrence": 1
+          }
+        ]
+      },
+      {
+        "kind": "grammar",
+        "title": "过去视角下的打算",
+        "expl": "was going to do 表示当时打算做的事；what 是 do 的前置宾语。",
+        "parts": [
+          {
+            "orig": "was going to do",
+            "occurrence": 1
+          }
+        ]
+      },
+      {
+        "kind": "relation",
+        "title": "两个内容从句并列",
+        "expl": "or 连接两个内容从句，共同说明 idea 的内容。",
+        "parts": [
+          {
+            "orig": "who I was",
+            "occurrence": 1
+          },
+          {
+            "orig": "what I was going to do",
+            "occurrence": 1
+          }
+        ]
+      }
+    ]
+  },
+  "contractions": {
+    "schemaVersion": 2,
+    "explanation": {
+      "translation": "她说：“我什么都不会给那个读心术师。”",
+      "meaning": "她不愿向读心术师透露任何线索。",
+      "grammar": "She’s like 引出直接引语。引语中 I’m giving 表示正在或打算给予，the mentalist 指接受者，nothing 指所给的内容。",
+      "status": "complete"
+    },
+    "structure": {
+      "orig": "She's like, \"I'm giving the mentalist nothing.\"",
+      "type": "含直接引语的陈述句",
+      "role": "整句",
+      "relation": "引语框架后接直接引语。",
+      "trans": "她说：“我什么都不会给那个读心术师。”",
+      "expl": "引语框架后接直接引语。",
+      "children": [
+        {
+          "orig": "She's like,",
+          "type": "口语引语框架",
+          "role": "引语框架",
+          "relation": "She’s 是 she is 的缩写；be like 在这里引出所说或所想的话。",
+          "trans": "她说",
+          "expl": "She’s 是 she is 的缩写；be like 在这里引出所说或所想的话。",
+          "children": []
+        },
+        {
+          "orig": "\"I'm giving the mentalist nothing.\"",
+          "type": "直接引语",
+          "role": "引语内容",
+          "relation": "I'm 中主语 I 与助动词 am 合写，展示时保留完整缩写。",
+          "trans": "我什么都不会给那个读心术师。",
+          "expl": "I'm 中主语 I 与助动词 am 合写，展示时保留完整缩写。",
+          "children": [
+            {
+              "orig": "I'm giving",
+              "type": "缩写与动词结构",
+              "role": "主语及谓语部分",
+              "relation": "I’m 是 I am 的缩写，am 与 giving 构成进行时。",
+              "trans": "我正给；我打算给",
+              "expl": "I’m 是 I am 的缩写，am 与 giving 构成进行时。",
+              "children": []
+            },
+            {
+              "orig": "the mentalist",
+              "type": "名词短语",
+              "role": "间接宾语",
+              "relation": "表示给予行为的接受者。",
+              "trans": "那个读心术师",
+              "expl": "表示给予行为的接受者。",
+              "children": []
+            },
+            {
+              "orig": "nothing.",
+              "type": "代词",
+              "role": "直接宾语",
+              "relation": "表示什么也不给。",
+              "trans": "什么也没有",
+              "expl": "表示什么也不给。",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    "vocabulary": [
+      {
+        "orig": "She's",
+        "occurrence": 1,
+        "lemma": "she + be",
+        "pos": "代词与系动词缩写",
+        "morphology": "she is 的缩写",
+        "trans": "她说；她心想"
+      }
+    ],
+    "annotations": [
+      {
+        "kind": "grammar",
+        "title": "缩写形式中的主语与助动词",
+        "expl": "I’m 保持合写，其中 I 是主语，am 与 giving 构成谓语。",
+        "parts": [
+          {
+            "orig": "I'm giving",
+            "occurrence": 1
+          }
+        ]
+      }
+    ]
+  }
+}

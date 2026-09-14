@@ -877,7 +877,7 @@
     if (!state.overlay) return;
 
     // Preserve native keyboard navigation inside the panel and dictionary.
-    if (event.key !== "Escape" && event.target?.closest?.("#elt-panel, #elt-dictionary, .elt-review-word")) return;
+    if (event.key !== "Escape" && event.target?.closest?.("#elt-panel, #elt-dictionary, .elt-review-word, .elt-syntax-unit, .elt-syntax-tools")) return;
 
     if (event.key === "Escape") {
       event.preventDefault();
@@ -1078,6 +1078,13 @@
       state.typedText = "then try it yourself";
       state.completedIndices = new Set([0, 1]);
       state.phase = "reviewing";
+      state.settings.translationEnabled = false;
+    }
+    if (new URL(location.href).searchParams.get("scenario") === "syntax") {
+      state.segments = [{ id: 0, text: "did you have any idea who I was or what I was going to do?", startMs: 0, endMs: 6200 }];
+      state.completedIndices.add(0);
+      state.phase = "reviewing";
+      state.panelView = "analysis";
       state.settings.translationEnabled = false;
     }
     if (new URL(location.href).searchParams.get("scenario") === "review") {

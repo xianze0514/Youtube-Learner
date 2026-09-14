@@ -24,7 +24,8 @@
 #elt-overlay .elt-review-sentence { position: relative; display: block; padding: 14px 0 22px; overflow: visible; color: #f4f2fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-weight: 500; line-height: 2.15; letter-spacing: 0; overflow-wrap: anywhere; }
 #elt-overlay .elt-linking-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 #elt-overlay .elt-linking-layer path { fill: none; stroke: #aaa2bc; stroke-width: 1.7; stroke-linecap: round; }
-#elt-overlay .elt-review-block { text-decoration-line: underline; text-decoration-color: var(--block-color); text-decoration-thickness: 3px; text-underline-offset: 9px; text-decoration-skip-ink: none; }
+#elt-overlay .elt-review-block { border-bottom: 3px solid var(--block-color); padding-bottom: 7px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+#elt-overlay .elt-review-block ~ .elt-review-block { margin-inline-start: .24em; }
 #elt-overlay .elt-review-word { border-radius: 5px; cursor: pointer; padding: 2px 0; transition: background-color 80ms, color 80ms; }
 #elt-overlay .elt-review-word:hover, #elt-overlay .elt-review-word:focus-visible { background: #393343; outline: 1px solid #8f829f; outline-offset: 2px; }
 #elt-overlay .elt-review-word.elt-word-playing { background: #e9e2ff; color: #211536; box-shadow: 0 0 0 3px #e9e2ff; }
@@ -35,3 +36,36 @@
 @media (prefers-reduced-motion: reduce) {
   #elt-overlay .elt-review-word { transition: none; }
 }
+
+#elt-overlay .elt-analysis-notice { padding: 10px 12px; border-left: 2px solid #fcd34d; background: #29251c; color: #e4d6ae; border-radius: 4px; }
+#elt-overlay .elt-analysis-overview { margin: 0 0 8px; white-space: pre-line; }
+#elt-overlay .elt-analysis-root-type { color: #a6a3b4; font-size: 11px; margin: 0 0 12px; }
+#elt-overlay .elt-analysis-block .elt-analysis-relation { margin: 6px 0; color: #d3c5e8; font-size: 12px; }
+#elt-overlay .elt-analysis-details { margin-top: 12px; min-width: 0; }
+#elt-overlay .elt-analysis-details > summary { padding: 7px 0; color: #d3c5e8; cursor: pointer; font-size: 12px; }
+#elt-overlay .elt-analysis-details > summary:focus-visible, #elt-overlay .elt-analysis-reference:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 3px; border-radius: 3px; }
+#elt-overlay .elt-analysis-children { margin-top: 4px; padding-left: 10px; border-left: 2px solid color-mix(in srgb, var(--block-color) 45%, transparent); }
+#elt-overlay .elt-analysis-child { padding: 10px 0; border-bottom: 1px solid #30303c; min-width: 0; }
+#elt-overlay .elt-analysis-child:last-child { border-bottom: none; }
+#elt-overlay .elt-analysis-child-source { color: var(--block-color); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+#elt-overlay .elt-analysis-annotations { margin-top: 24px; }
+#elt-overlay .elt-analysis-annotation { padding: 12px 0; border-bottom: 1px solid #30303c; }
+#elt-overlay .elt-analysis-annotation h4 { margin: 3px 0 8px; font-size: 13px; color: #e8e2f4; }
+#elt-overlay .elt-analysis-annotation p, #elt-overlay .elt-analysis-vocabulary p { margin: 6px 0 0; color: #bcb9c9; white-space: pre-line; overflow-wrap: anywhere; }
+#elt-overlay .elt-analysis-reference { max-width: 100%; border: 1px solid #474052; border-radius: 6px; background: #25212f; padding: 4px 8px; color: #d9cef0; font: inherit; text-align: left; overflow-wrap: anywhere; cursor: pointer; }
+#elt-overlay .elt-analysis-vocabulary { padding: 10px 0; border-bottom: 1px solid #30303c; }
+#elt-overlay .elt-analysis-vocabulary .elt-analysis-base { margin-left: 8px; }
+#elt-overlay .elt-review-word.elt-word-related { background: #413452; outline: 1px solid #c4b5fd; }
+
+#elt-overlay .elt-syntax-unit { cursor: pointer; border-radius: 3px; }
+#elt-overlay .elt-syntax-unit:focus-visible { outline: 2px solid var(--block-color); outline-offset: 4px; }
+#elt-overlay .elt-syntax-unit.elt-syntax-selected { background: color-mix(in srgb, var(--block-color) 8%, transparent); }
+#elt-overlay .elt-syntax-start { white-space: nowrap; }
+#elt-overlay .elt-syntax-separator { display: inline-block; height: .58em; width: 0; margin: 0 .22em; border-left: 1px solid color-mix(in srgb, var(--block-color) 70%, transparent); vertical-align: -.01em; pointer-events: none; }
+#elt-overlay .elt-syntax-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 12px; margin: 6px 0 12px; color: #a9a3b8; font-size: 12px; line-height: 1.6; text-align: center; }
+#elt-overlay .elt-syntax-info { flex: 1 1 100%; min-width: 0; overflow-wrap: anywhere; }
+#elt-overlay .elt-syntax-info strong { display: block; color: #d6cce8; font-weight: 500; }
+#elt-overlay .elt-syntax-info span { display: block; }
+#elt-overlay .elt-syntax-tools button { background: #25212f; color: #d9cef0; border: 1px solid #474052; border-radius: 6px; padding: 4px 10px; font: inherit; cursor: pointer; }
+#elt-overlay .elt-syntax-tools button:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 3px; }
+#elt-overlay .elt-analysis-selected { box-shadow: inset 2px 0 var(--block-color); }

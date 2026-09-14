@@ -13,7 +13,7 @@ function setup(count = 25) {
   const review = context.EnglishListeningTyping.createReviewController(state,{}, {onChange:()=>changes++});
   return {state,review,calls,changes:()=>changes};
 }
-const success = {analysis:{explanation:{},blocks:[{orig:'Sentence'}]}};
+const success = {analysis:{schemaVersion:2,structure:{},explanation:{},blocks:[{orig:'Sentence'}]}};
 const settle = async(call,response=success)=>{call.resolve(response);await new Promise(resolve=>setImmediate(resolve));};
 
 (async()=>{

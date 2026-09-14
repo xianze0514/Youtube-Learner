@@ -39,6 +39,7 @@
       };
       window.chrome ||= {};
       window.chrome.runtime ||= {};
+      window.chrome.storage ||= { local: {} };
       window.chrome.runtime.onMessage ||= { addListener() {} };
       const previewTranslations = {
         0: "每天迈出一小步，就会带来显著的进步。",
@@ -78,26 +79,16 @@
           };
         }
         if (message.type === "ELT_ANALYZE_SENTENCE") {
-          const phrases = message.targetSentence === "Small steps every day lead to remarkable progress."
-            ? [
-              ["Small steps", "small step", "名词短语 · 主语", "小小的进步", "small 修饰 steps，steps 在此比喻每次付出的小行动。复数主语与后面的 lead 保持一致。"],
-              ["every day", "every day", "时间状语", "每天", "every day 表示动作发生的频率。注意与形容词 everyday（日常的）区分。"],
-              ["lead to", "lead to", "动词短语 · 谓语", "带来；促成", "lead to 表示导致某种结果，to 是介词，后面接名词或动名词。这里描述日常行动带来的积极结果。"],
-              ["remarkable progress.", "remarkable progress", "名词短语 · 介词宾语", "显著的进步", "remarkable 表示值得注意、令人印象深刻。progress 是不可数名词，通常不加 a，也不使用复数形式。"],
-            ] : null;
-          if (!phrases) return { error: "预览仅提供第一句的示例详解，真实学习页会请求当前句的解析。" };
-          let cursor = 0;
-          const blocks = phrases.map(([orig, baseform, partofspeech, trans, expl]) => {
-            const start = message.targetSentence.indexOf(orig, cursor);
-            cursor = start + orig.length;
-            return { orig, baseform, partofspeech, trans, expl, start, end: cursor };
-          });
-          return { analysis: { explanation: {
-            translation: "每天迈出一小步，就会带来显著的进步。",
-            meaning: "这句话强调日常积累的价值：坚持每天做一点，最终也能取得明显的进步。",
-            grammar: "主语 Small steps + 时间状语 every day + 谓语 lead to + 宾语 remarkable progress。一般现在时表达普遍规律；主语是复数，动词使用 lead。",
-          }, blocks } };
+          // Authored teaching fixtures, validated by the same code as real responses.
+          const [{ validateAnalysis }, fixtures] = await Promise.all([
+            import("./background/analysis.js"),
+            fetch("./tests/fixtures/syntax-analysis.json").then(response => response.json()),
+          ]);
+          const fixture = Object.values(fixtures).find(item => item.structure.orig === message.targetSentence);
+          if (!fixture) return { error: "预览仅提供示例句详解，真实学习页会请求当前句的解析。" };
+          return { analysis: validateAnalysis(fixture, message.targetSentence) };
         }
+
         if (message.type === "ELT_OPEN_SETTINGS") return { ok: true };
         return {
           entry: { ...previewDictionaryEntry, word: message.word },
