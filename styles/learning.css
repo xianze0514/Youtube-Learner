@@ -55,3 +55,11 @@ html, body { margin: 0; background: #08090d; }
   #elt-overlay .elt-dictation-card { padding: 12px 20px; }
   #elt-overlay .elt-character-slots { min-height: 36px; font-size: 24px; }
 }
+
+#elt-overlay #elt-save-status {
+  display: block; border: 0; padding: 3px 0; background: transparent;
+  color: #a9a4b6; font: inherit; font-size: 10px; cursor: pointer; text-align: left;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+#elt-overlay #elt-save-status.elt-save-failed { color: #f5b96c; }
+#elt-overlay #elt-save-status:focus-visible { outline: 2px solid #8b5cf6; outline-offset: 2px; }

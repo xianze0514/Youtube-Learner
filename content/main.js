@@ -80,10 +80,10 @@
     closeDictionaryImmediately,
   } = dictionary;
   const {
-    render,
+    render: renderView,
     setPanelView,
     renderCurrentTranslation,
-    renderTypingState,
+    renderTypingState: renderTypingView,
     updatePlaybackProgress,
   } =
     modules.createRenderer(state, dictionary, {
@@ -94,6 +94,16 @@
       renderSoundToggle,
     });
   const { overlayMarkup } = modules;
+  const progress = modules.createProgressController?.(state, (message, failed) => {
+    const status = state.overlay?.querySelector("#elt-save-status");
+    if (status) {
+      status.textContent = message;
+      status.title = message;
+      status.classList.toggle("elt-save-failed", failed);
+    }
+  });
+  function render() { renderView(); progress?.schedule(); }
+  function renderTypingState() { renderTypingView(); progress?.schedule(); }
 
   if (typeof chrome !== "undefined" && chrome.runtime?.onMessage) {
     chrome.runtime.onMessage.addListener((message) => {
@@ -117,6 +127,13 @@
     state.elements.videoTitle.textContent = "正在准备你的听写练习";
     state.overlay.querySelector(".elt-brand strong").textContent = "英语精听";
     state.overlay.querySelector("#elt-close").textContent = "返回 YouTube";
+    const status = document.createElement("button");
+    status.id = "elt-save-status";
+    status.type = "button";
+    status.textContent = "正在准备学习记录……";
+    status.setAttribute("aria-live", "polite");
+    status.addEventListener("click", () => { void progress.flush(); });
+    state.overlay.querySelector(".elt-brand").appendChild(status);
     try {
       const response = await chrome.runtime.sendMessage({ type: "ELT_GET_LEARNING" });
       if (response?.error) throw new Error(response.error);
@@ -141,8 +158,24 @@
       state.segments = prepared.segments;
       state.trackLabel = prepared.trackLabel;
       state.index = findStartingIndex(state.segments, session.startTime * 1000);
-      void chrome.runtime.sendMessage({ type: "ELT_CACHE_LEARNING", prepared }).catch(() => {});
-      await playSegment(state.index, "listening", true);
+      const restored = progress.restore(session.progress);
+      try {
+        const cached = await chrome.runtime.sendMessage({ type: "ELT_CACHE_LEARNING", prepared });
+        if (!cached?.ok) throw new Error(cached?.error || "扩展未响应");
+        progress.enable();
+      } catch (error) {
+        status.textContent = `学习记录未保存：${error.message}。请刷新重试`;
+        status.classList.add("elt-save-failed");
+      }
+      if (restored && ["reviewing", "complete"].includes(state.phase)) {
+        state.playbackSegment = state.segments[state.index];
+        state.video.currentTime = state.segments[state.index].startMs / 1000;
+        render();
+        focusKeyboardCapture();
+      } else {
+        await playSegment(state.index, "listening", !restored);
+      }
+      void progress.flush();
     } catch (error) {
       state.video?.pause();
       showFatalError(error.message || "学习页暂时无法加载，请返回原视频重试。");
@@ -465,6 +498,7 @@
   function closeTrainer() {
     if (document.documentElement.dataset.eltLearning === "true") {
       state.video?.pause();
+      void progress?.flush();
       void chrome.runtime.sendMessage({ type: "ELT_RETURN_SOURCE" }).catch(() => {});
       return;
     }
@@ -822,6 +856,7 @@
     const nextRate = PLAYBACK_RATES[(currentIndex + 1) % PLAYBACK_RATES.length];
     state.video.playbackRate = nextRate;
     state.elements.speed.textContent = `${nextRate}×`;
+    progress?.schedule();
   }
 
   function toggleTypingSound(event) {
@@ -829,6 +864,7 @@
     event?.stopPropagation();
     state.soundEnabled = !state.soundEnabled;
     renderSoundToggle();
+    progress?.schedule();
   }
 
   function renderSoundToggle() {
@@ -1071,7 +1107,10 @@
 
   if (document.documentElement.dataset.eltLearning === "true") {
     void openStandaloneTrainer();
-    window.addEventListener("pagehide", () => state.video?.destroy?.());
+    window.addEventListener("pagehide", () => { void progress.flush(); state.video?.destroy?.(); });
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") void progress.flush();
+    });
   } else {
     openLocalPreview();
   }

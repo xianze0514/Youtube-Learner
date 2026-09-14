@@ -14,13 +14,17 @@
       existing?.remove();
       return;
     }
-    if (existing?.parentElement === controls) return;
+    // New YouTube players nest settings/fullscreen in separate control groups.
+    // insertBefore requires the reference button's actual parent, not an ancestor.
+    const anchor = controls.querySelector(".ytp-settings-button") || controls.querySelector(".ytp-fullscreen-button");
+    const parent = anchor?.parentElement || controls;
+    if (existing?.parentElement === parent && (!anchor || existing.nextElementSibling === anchor)) return;
     existing?.remove();
     const button = document.createElement("button");
     button.id = id;
     button.type = "button";
     button.className = "ytp-button elt-launch-button";
-    button.title = "开始听写 · 在新标签页打开";
+    button.title = "进入学习 · 自动接续上次进度";
     button.setAttribute("aria-label", button.title);
     const icon = document.createElement("img");
     icon.src = chrome.runtime.getURL("assets/headphones.svg");
@@ -36,7 +40,7 @@
       try {
         const response = await chrome.runtime.sendMessage({ type: "ELT_OPEN_LEARNING" });
         if (response?.error) throw new Error(response.error);
-        button.title = "开始听写 · 在新标签页打开";
+        button.title = "进入学习 · 自动接续上次进度";
       } catch (error) {
         button.title = `打开失败，请刷新视频页后重试：${error.message}`;
       } finally {
@@ -45,7 +49,7 @@
         pending = false;
       }
     });
-    controls.insertBefore(button, controls.querySelector(".ytp-subtitles-button, .ytp-settings-button") || controls.firstChild);
+    parent.insertBefore(button, anchor || parent.firstChild);
   }
 
   function schedule() {
@@ -55,5 +59,6 @@
   }
   new MutationObserver(schedule).observe(document.documentElement, { childList: true, subtree: true });
   document.addEventListener("yt-navigate-finish", schedule);
+  document.addEventListener("fullscreenchange", schedule);
   install();
 })();

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>英语精听 · 学习记录</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="brand"><img src="assets/headphones.svg" alt=""><div><strong>英语精听</strong><span>让每一次练习，都接得上</span></div></div>
+    <button id="settings" class="quiet" type="button">设置</button>
+  </header>
+  <main>
+    <section class="overview" aria-label="学习概览">
+      <div><strong id="video-count">—</strong><span>学习视频</span></div>
+      <div><strong id="sentence-count">—</strong><span>完成句数</span></div>
+      <p>一点一点听懂<br>一句一句积累</p>
+    </section>
+    <section id="current-video" class="current" hidden>
+      <div><span class="eyebrow">当前 YouTube 视频</span><p id="current-title"></p></div>
+      <button id="start-current" class="secondary" type="button">开始学习</button>
+    </section>
+    <div class="section-heading"><h1>学习记录</h1><span>最近学习优先</span></div>
+    <p id="status" role="status" aria-live="polite">正在读取学习记录……</p>
+    <div id="history"></div>
+    <section id="empty" class="empty" hidden>
+      <div class="empty-icon" aria-hidden="true">▷</div>
+      <h2>从一个感兴趣的视频开始</h2>
+      <p>在 YouTube 播放器设置旁点击紫色耳机，<br>你的学习记录就会出现在这里。</p>
+      <button id="open-youtube" class="primary" type="button">去 YouTube 找视频 ↗</button>
+    </section>
+  </main>
+  <footer><span class="dot"></span>进度自动保存在本机 · 随时回来继续</footer>
+</body>
+</html>

@@ -5,11 +5,14 @@ const EXT = 'chrome-extension://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 const VIDEO = 'RcGyVTAoXEU';
 
 async function testSessions() {
-  const stored = {}, calls = [], tabs = new Map([[1, {id:1, windowId:2, url:`https://www.youtube.com/watch?v=${VIDEO}`}]]);
+  const stored = {}, local = {}, calls = [], tabs = new Map([[1, {id:1, windowId:2, url:`https://www.youtube.com/watch?v=${VIDEO}`}]]);
   let removed, failRule = false, count = 100;
   const chrome = {
     runtime: { id: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', getURL: path => `${EXT}/${path}` },
-    storage: { session: {
+    storage: { local: {
+      set: async items => Object.assign(local, structuredClone(items)),
+      get: async keys => keys === null ? structuredClone(local) : Object.fromEntries([].concat(keys).map(key => [key, structuredClone(local[key])])),
+    }, session: {
       set: async items => Object.assign(stored, structuredClone(items)),
       get: async key => key === null ? structuredClone(stored) : {[key]: structuredClone(stored[key])},
       remove: async keys => { for (const key of [].concat(keys)) delete stored[key]; },
@@ -30,6 +33,7 @@ async function testSessions() {
     fetchTranscriptInPage: async (tabId,options) => ({tabId,options}),
     isTrustedExtensionPage: sender => sender.id===chrome.runtime.id && sender.url.startsWith(EXT+'/'),
   });
+  vm.runInContext(fs.readFileSync('background/history.js', 'utf8').replace(/export /g, ''), context);
   const source=fs.readFileSync('background/learning.js','utf8').replace(/^import .*;\n/gm,'').replace(/export /g,'');
   vm.runInContext(source+'\nglobalThis.api={openLearningTab,handleLearningMessage};', context);
   const api = context.api;
@@ -53,6 +57,20 @@ async function testSessions() {
   await assert.rejects(api.handleLearningMessage({type:'ELT_OPEN_LEARNING'},{...sender,frameId:4}),/入口/);
   const prepared={segments:[{startMs:1000,endMs:2000,text:'Hello.'}],trackLabel:'English'};
   await api.handleLearningMessage({type:'ELT_CACHE_LEARNING',prepared},sender);
+  const progress = {index:0, typedText:'Hel', completedIndices:[], sentenceMistakes:1, totalMistakes:2, playbackRate:0.75, soundEnabled:false};
+  await api.handleLearningMessage({type:'ELT_SAVE_PROGRESS',progress},sender);
+  assert.equal((await api.handleLearningMessage({type:'ELT_GET_LEARNING'},sender)).session.progress.typedText,'Hel','refresh restores partial typing');
+  const popup={id:chrome.runtime.id,url:EXT+'/popup.html'};
+  await assert.rejects(api.handleLearningMessage({type:'ELT_LIST_HISTORY'},{...popup,url:'https://www.youtube.com/'}),/无权/);
+  assert.equal((await api.handleLearningMessage({type:'ELT_LIST_HISTORY'},popup)).records.length,1);
+  const beforeResume=calls.filter(c=>c[0]==='create').length;
+  const learningUrl=tabs.get(entry.learningTabId).url;
+  chrome.runtime.getContexts=async filter => filter.tabIds.includes(entry.learningTabId) && filter.documentUrls.includes(learningUrl) ? [{tabId:entry.learningTabId,documentUrl:learningUrl}] : [];
+  delete tabs.get(entry.learningTabId).url;
+  await api.handleLearningMessage({type:'ELT_RESUME_LEARNING',videoId:VIDEO},popup);
+  assert.equal(calls.filter(c=>c[0]==='create').length,beforeResume,'resume focuses the existing learning tab even when Chrome omits its URL');
+  delete chrome.runtime.getContexts;
+  tabs.get(entry.learningTabId).url=learningUrl;
   tabs.delete(1);
   assert.equal((await api.handleLearningMessage({type:'ELT_GET_LEARNING'},sender)).session.prepared.segments[0].text,'Hello.','cached captions survive source close');
   await assert.rejects(api.handleLearningMessage({type:'ELT_LEARNING_TRANSCRIPT'},sender),/保持原/);
@@ -60,6 +78,19 @@ async function testSessions() {
   assert.equal(calls.at(-1)[1].url,`https://www.youtube.com/watch?v=${VIDEO}`);
   await removed(entry.learningTabId);
   assert.equal(Object.keys(stored).length,0,'closing learning tab removes cached session');
+  assert.equal(Object.keys(local).length,2,'closing learning tab retains durable captions and progress');
+  await api.handleLearningMessage({type:'ELT_RESUME_LEARNING',videoId:VIDEO},popup);
+  const resumed=Object.values(stored)[0];
+  assert.equal(resumed.progress.typedText,'Hel');
+  assert.equal(resumed.prepared.segments[0].text,'Hello.');
+  const resumeSender={...sender,tab:{id:resumed.learningTabId},url:`${EXT}/learning.html?session=${resumed.sessionId}&video=${VIDEO}`};
+  await api.handleLearningMessage({type:'ELT_RETURN_SOURCE'},resumeSender);
+  assert.equal(calls.at(-1)[1].url,`https://www.youtube.com/watch?v=${VIDEO}`,'resume can return to YouTube with no source tab');
+  for(const key of Object.keys(stored)) delete stored[key];
+  const recovered=(await api.handleLearningMessage({type:'ELT_GET_LEARNING'},resumeSender)).session;
+  assert.equal(recovered.progress.typedText,'Hel','restored browser tabs recover after session storage is cleared');
+  await assert.rejects(api.handleLearningMessage({type:'ELT_SAVE_PROGRESS',progress:{...progress,index:99}},resumeSender),/无效/);
+  await removed(resumed.learningTabId);
   failRule=true;
   const pauses=calls.filter(c=>c[0]==='pause').length;
   await assert.rejects(api.openLearningTab({id:9,url:`https://www.youtube.com/watch?v=${VIDEO}`}),/rule failure/);
@@ -122,8 +153,21 @@ async function testLauncher() {
   let observer, calls=0, resolveLaunch;
   const buttons=[];
   const caption={caption:true};
-  const makeControls=()=>({children:[caption],querySelector:()=>caption,
-    insertBefore(button,before){this.children.splice(this.children.indexOf(before),0,button);button.parentElement=this;}});
+  function makeControls(nested = false) {
+    const makeParent = children => ({ children,
+      get firstChild() { return this.children[0] || null; },
+      insertBefore(button, before) {
+        if (before !== null && before.parentElement !== this) throw new Error('NotFoundError: reference is not a child');
+        const index = before === null ? this.children.length : this.children.indexOf(before);
+        this.children.splice(index, 0, button); button.parentElement = this;
+      } });
+    const group = makeParent([caption]);
+    caption.parentElement = group;
+    const root = nested ? makeParent([group]) : group;
+    if (nested) group.parentElement = root;
+    root.querySelector = () => caption;
+    return root;
+  }
   let controls=makeControls();
   const location={pathname:'/watch',href:'https://www.youtube.com/watch?v='+VIDEO};
   const context=vm.createContext({URL,location,requestAnimationFrame:fn=>fn(),
@@ -131,6 +175,7 @@ async function testLauncher() {
     document:{documentElement:{},addEventListener:()=>{},querySelector:()=>controls,
       getElementById:id=>buttons.find(b=>b.id===id&&b.parentElement),
       createElement:()=>{const button={listeners:{},setAttribute:()=>{},appendChild:()=>{},
+        get nextElementSibling() { const siblings = this.parentElement?.children || []; return siblings[siblings.indexOf(this) + 1] || null; },
         addEventListener(type,fn){this.listeners[type]=fn;},
         remove(){if(this.parentElement)this.parentElement.children=this.parentElement.children.filter(b=>b!==this);this.parentElement=null;}};buttons.push(button);return button;}},
     chrome:{runtime:{getURL:path=>EXT+'/'+path,sendMessage:()=>{calls++;return new Promise(resolve=>resolveLaunch=resolve);}}}
@@ -139,6 +184,7 @@ async function testLauncher() {
   const first=controls.children[0];
   assert.equal(first.id,'elt-launch-learning');assert.equal(controls.children[1],caption);
   observer();observer();assert.equal(controls.children.length,2,'DOM mutations must not duplicate the entry');
+  assert.equal(controls.children[0],first,'unrelated DOM changes must retain the same button');
   const event={preventDefault(){},stopPropagation(){}};
   const launch=first.listeners.click(event);await first.listeners.click(event);
   assert.equal(calls,1);assert.equal(first.disabled,true);
@@ -147,13 +193,23 @@ async function testLauncher() {
   assert.equal(controls.children[0].id,'elt-launch-learning','reinsert when YouTube rebuilds player controls');
   location.pathname='/';observer();assert.equal(controls.children.length,1,'remove on navigation away from videos');
   location.pathname='/watch';observer();assert.equal(controls.children.length,2,'restore after SPA navigation back');
+  controls=makeControls(true);observer();
+  const nestedEntry=caption.parentElement.children[0];
+  assert.equal(nestedEntry.id,'elt-launch-learning','new YouTube layout inserts inside the settings subgroup');
+  assert.notEqual(nestedEntry.parentElement,controls);
+  assert.equal(nestedEntry.nextElementSibling,caption);
+  observer();observer();
+  assert.equal(caption.parentElement.children[0],nestedEntry,'nested controls do not trigger an endless remove/reinsert loop');
+  controls=makeControls();observer();
+  assert.equal(controls.children[0].id,'elt-launch-learning','switching back to legacy flat controls is supported');
 }
 
 function testManifest() {
   const manifest=JSON.parse(fs.readFileSync('manifest.json'));
   assert.equal(manifest.content_scripts[0].js[0],'content/launcher.js');
   for(const script of manifest.content_scripts[0].js) assert(fs.existsSync(script));
-  for(const html of ['learning.html','player.html']) {
+  assert.equal(manifest.action.default_popup,'popup.html');
+  for(const html of ['learning.html','player.html','popup.html']) {
     const source=fs.readFileSync(html,'utf8');
     for(const [,url] of source.matchAll(/(?:src|href)="([^"]+)"/g)) {
       assert(!url.startsWith('https:'),'extension pages must not load remote executable resources');

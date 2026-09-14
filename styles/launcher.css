@@ -1,13 +1,19 @@
 #movie_player .elt-launch-button {
   width: 48px;
+  height: 100%;
+  padding: 0;
+  flex: 0 0 48px;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   vertical-align: top;
 }
 #movie_player .elt-launch-button img {
-  width: 27px;
-  height: 27px;
+  display: block;
+  pointer-events: none;
+  width: 24px;
+  height: 24px;
   padding: 5px;
   box-sizing: content-box;
   border-radius: 9px;
